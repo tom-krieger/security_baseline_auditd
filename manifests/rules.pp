@@ -5,9 +5,13 @@
 # @example
 #   include security_baseline_auditd::rules
 class security_baseline_auditd::rules (
-  Boolen $enforce = true,
+  Boolen $enforce   = true,
+  String $message   = '',
+  String $log_level = 'info',
 ) {
   class { '::security_baseline_auditd::rules::time_change':
-    enforce => $enforce,
+    enforce   => $enforce,
+    message   => $message,
+    log_level => $log_level,
   }
 }

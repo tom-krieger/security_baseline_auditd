@@ -17,15 +17,15 @@
 # @example
 #   include security_baseline_auditd::ecurity_baseline_auditd
 class security_baseline_auditd (
-  Boolean $enforce = true,
-  String $message = '',
-  String $log_level = '',
-  String $logfile = '',
-  Integer $max_log_size = 32,
-  String $space_left_action = 'email',
-  String $action_mail_acct = 'root',
+  Boolean $enforce                = true,
+  String $message                 = '',
+  String $log_level               = 'info',
+  String $logfile                 = '',
+  Integer $max_log_size           = 32,
+  String $space_left_action       = 'email',
+  String $action_mail_acct        = 'root',
   String $admin_space_left_action = 'halt',
-  String $max_log_file_action = 'keep_logs',
+  String $max_log_file_action     = 'keep_logs',
 ) {
   if($enforce) {
     $auditd_config = {
