@@ -20,38 +20,13 @@ class security_baseline_auditd (
   Boolean $enforce = true,
   String $message = '',
   String $log_level = '',
-  Optional[Hash] $config_data = {},
+  String $logfile = '',
+  Integer $max_log_size = 32,
+  String $space_left_action = 'email',
+  String $action_mail_acct = 'root',
+  String $admin_space_left_action = 'halt',
+  String $max_log_file_action = 'keep_logs',
 ) {
-  if(has_key($config_data, 'max_log_size')) {
-    $max_log_size = $config_data['max_log_size']
-  } else {
-    $max_log_size = 32
-  }
-
-  if(has_key($config_data, 'space_left_action')) {
-    $space_left_action = $config_data['space_left_action']
-  } else {
-    $space_left_action = 'email'
-  }
-
-  if(has_key($config_data, 'action_mail_acct')) {
-    $action_mail_acct = $config_data['action_mail_acct']
-  } else {
-    $action_mail_acct = 'root'
-  }
-
-  if(has_key($config_data, 'admin_space_left_action')) {
-    $admin_space_left_action = $config_data['admin_space_left_action']
-  } else {
-    $admin_space_left_action = 'halt'
-  }
-
-  if(has_key($config_data, 'max_log_file_action')) {
-    $max_log_file_action = $config_data['max_log_file_action']
-  } else {
-    $max_log_file_action = 'keep_logs'
-  }
-
   if($enforce) {
     $auditd_config = {
       'max_log_file' => $max_log_size,
