@@ -14,4 +14,16 @@ class security_baseline_auditd::rules (
     message   => $message,
     log_level => $log_level,
   }
+
+  class { 'security_baseline_auditd::rules::identity':
+    enforce   => $enforce,
+    message   => $message,
+    log_level => $log_level,
+  }
+
+  class { 'security_baseline_auditd::rules::system_locale':
+    enforce   => $enforce,
+    message   => $message,
+    log_level => $log_level,
+  }
 }

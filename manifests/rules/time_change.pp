@@ -46,12 +46,12 @@ class security_baseline_auditd::rules::time_change (
   } else {
     if($facts['security_baseline_auditd']['time-change'] == false) {
       echo { 'auditd-time-change':
-      message  => $message,
-      loglevel => $log_level,
-      withpath => false,
-    }
+        message  => $message,
+        loglevel => $log_level,
+        withpath => false,
+      }
 
-    ::security_baseline::logging { 'auditd-time-change':
+      ::security_baseline::logging { 'auditd-time-change':
         rulenr    => 'auditd',
         rule      => 'auditd',
         desc      => 'Ensure events that modify date and time information are collected (Scored)',

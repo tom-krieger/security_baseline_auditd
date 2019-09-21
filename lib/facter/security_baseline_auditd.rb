@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'facter/helpers/check_values'
+
 # security_baseline_auditd.rb
 # Gather facts around auditd
 
@@ -7,6 +9,7 @@ Facter.add('security_baseline_auditd') do
   confine osfamily: 'RedHat'
   setcode do
     security_baseline_auditd = {}
+    arch = Facter.value(:architecture)
     val = Facter::Core::Execution.exec('grep max_log_file /etc/audit/auditd.conf')
     security_baseline_auditd['max_log_file'] = if val.empty? || val.nil?
                                                  'none'
@@ -51,19 +54,58 @@ Facter.add('security_baseline_auditd') do
                                                    end
 
     val = Facter::Core::Execution.exec('auditctl -l | grep time-change')
-    ret = if val.empty? || val.nil?
-            false
-          elsif (val == '-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change') &&
-                (val == '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time- change') &&
-                (val == '-a always,exit -F arch=b64 -S clock_settime -k time-change') &&
-                (val == '-a always,exit -F arch=b32 -S clock_settime -k time-change') &&
-                (val == '-w /etc/localtime -p wa -k time-change')
-            true
-          else
-            false
-          end
-
+    expected = [
+      '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time- change',
+      '-a always,exit -F arch=b32 -S clock_settime -k time-change',
+      '-w /etc/localtime -p wa -k time-change',
+    ]
+    if arch == 'x86_64'
+      expected.push('-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change')
+      expected.push('-a always,exit -F arch=b64 -S clock_settime -k time-change')
+    end
+    if val.empty? || val.nil?
+      ret = false
+    else
+      output = val.split("\n")
+      ret = check_values(output, expected)
+    end
     security_baseline_auditd['time-change'] = ret
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep identity')
+    expected = [
+      '-w /etc/group -p wa -k identity',
+      '-w /etc/passwd -p wa -k identity',
+      '-w /etc/gshadow -p wa -k identity',
+      '-w /etc/shadow -p wa -k identity',
+      '-w /etc/security/opasswd -p wa -k identity',
+    ]
+    if val.empty? || val.nil?
+      ret = false
+    else
+      output = val.split("\n")
+      ret = check_values(output, expected)
+    end
+    security_baseline_auditd['identity'] = ret
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep system-locale')
+    expected = [
+      '-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale',
+      '-w /etc/issue -p wa -k system-locale',
+      '-w /etc/issue.net -p wa -k system-locale',
+      '-w /etc/hosts -p wa -k system-locale',
+      '-w /etc/sysconfig/network -p wa -k system-locale',
+      '-w /etc/sysconfig/network-scripts/ -p wa -k system-locale',
+    ]
+    if arch == 'x86_64'
+      expected.push('-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale')
+    end
+    if val.empty? || val.nil?
+      ret = false
+    else
+      output = val.split("\n")
+      ret = check_values(output, expected)
+    end
+    security_baseline_auditd['system-locale'] = ret
 
     security_baseline_auditd
   end
