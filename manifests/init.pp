@@ -42,4 +42,10 @@ class security_baseline_auditd (
   } else {
 
   }
+
+  class { 'security_baseline_auditd::rules':
+    enforce   => $enforce,
+    message   => $message,
+    log_level => $log_level,
+  }
 }
