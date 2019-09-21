@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # security_baseline_auditd.rb
-# Gather facts arround auditd
+# Gather facts around auditd
 
 Facter.add('security_baseline_auditd') do
   confine osfamily: 'RedHat'
