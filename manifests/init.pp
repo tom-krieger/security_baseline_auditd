@@ -40,12 +40,50 @@ class security_baseline_auditd (
       * => $auditd_config,
     }
   } else {
+    if(
+      ($facts['security_baseline_auditd']['max_log_file'] == 'none') or
+      ($facts['security_baseline_auditd']['action_mail_acct'] == 'none') or
+      ($facts['security_baseline_auditd']['admin_space_left_action'] == 'none') or
+      ($facts['security_baseline_auditd']['max_log_file_action'] == 'none')
+    ) {
+      echo { 'auditd-settings':
+        message  => $message,
+        loglevel => $log_level,
+        withpath => false,
+      }
 
+      ::security_baseline::logging { 'auditd-settings':
+        rulenr    => 'auditd',
+        rule      => 'auditd',
+        desc      => 'Ensure auditd settings are correct (Scored)',
+        level     => $log_level,
+        msg       => 'Auditd settings are not correct.',
+        rulestate => 'not compliant',
+      }
+    }
+
+    if($facts['security_baseline_auditd']['srv_auditd'] == 'none') {
+      echo { 'auditd-service':
+        message  => $message,
+        loglevel => $log_level,
+        withpath => false,
+      }
+
+      ::security_baseline::logging { 'auditd-service':
+        rulenr    => 'auditd',
+        rule      => 'auditd',
+        desc      => 'Ensure auditd servie is running (Scored)',
+        level     => $log_level,
+        msg       => 'Auditd service is not running.',
+        rulestate => 'not compliant',
+      }
+    }
   }
 
   class { '::security_baseline_auditd::rules':
     enforce   => $enforce,
     message   => $message,
     log_level => $log_level,
+    require   => Class['::auditd'],
   }
 }
