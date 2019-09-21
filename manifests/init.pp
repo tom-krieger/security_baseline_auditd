@@ -43,7 +43,7 @@ class security_baseline_auditd (
 
   }
 
-  class { 'security_baseline_auditd::rules':
+  class { '::security_baseline_auditd::rules':
     enforce   => $enforce,
     message   => $message,
     log_level => $log_level,
