@@ -14,12 +14,12 @@ def check_values(val, expected, reverse = false, debug = false)
 
     if reverse
       if debug
-        pp (expected - output)
+        pp expected - output
       end
       ret = (expected - output).empty?
     else
       if debug
-        pp (output - expected)
+        pp output - expected
       end
       ret = (output - expected).empty?
     end
