@@ -37,7 +37,7 @@ Facter.add('security_baseline_auditd') do
                                                           else
                                                             val
                                                           end
-    
+
     val = Facter::Core::Execution.exec('grep max_log_file_action /etc/audit/auditd.conf')
     security_baseline_auditd['max_log_file_action'] = if val.empty? || val.nil?
                                                         'none'
@@ -142,7 +142,7 @@ Facter.add('security_baseline_auditd') do
 
     rules = {}
     expected = []
-    Facter.value(:partitions).each do |part, data|
+    Facter.value(:partitions).each do |_part, data|
       mount = data['mount']
       rules[mount] = Facter::Core::Execution.exec('find / -xdev \( -perm -4000 -o -perm -2000 \) -type f | awk \'{print "-a always,exit -F path=" $1 " -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged" }\'').split("\n")
       expected.push(rules)
@@ -187,7 +187,7 @@ Facter.add('security_baseline_auditd') do
     expected = [
       '-w /sbin/insmod -p x -k modules',
       '-w /sbin/rmmod -p x -k modules',
-      '-w /sbin/modprobe -p x -k modules'
+      '-w /sbin/modprobe -p x -k modules',
     ]
     if arch == 'x86_64'
       exceptions.push('-a always,exit -F arch=b64 -S init_module -S delete_module -k modules')
