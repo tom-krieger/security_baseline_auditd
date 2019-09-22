@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'facter/helpers/check_values'
+require 'pp'
 
 # security_baseline_auditd.rb
 # Gather facts around auditd
@@ -114,7 +115,7 @@ Facter.add('security_baseline_auditd') do
       '-w /var/log/wtmp -p wa -k logins',
       '-w /var/log/btmp -p wa -k logins',
     ]
-    security_baseline_auditd['session-logins'] = check_values(val, expected, true, true)
+    security_baseline_auditd['session-logins'] = check_values(val, expected, true)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep perm_mod')
     expected = [
@@ -143,7 +144,9 @@ Facter.add('security_baseline_auditd') do
     rules = {}
     expected = []
     part_data = Facter.value(:partitions)
+    pp part_data
     part_data.each_key do |part|
+      pp part
       data = part_data[part]
       mount = data['mount']
       rules[mount] = Facter::Core::Execution.exec('find / -xdev \( -perm -4000 -o -perm -2000 \) -type f | awk \'{print "-a always,exit -F path=" $1 " -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged" }\'').split("\n")
