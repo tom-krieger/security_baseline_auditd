@@ -10,8 +10,10 @@ def check_values(val, expected, reverse = false)
     pp output
     pp expected
     if reverse
+      pp (expected - output)
       ret = (expected - output).empty?
     else
+      pp (output - expected)
       ret = (output - expected).empty?
     end
 
