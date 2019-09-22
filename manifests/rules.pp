@@ -16,6 +16,10 @@ class security_baseline_auditd::rules (
     'security_baseline_auditd::rules::system_locale',
     'security_baseline_auditd::rules::mac_policy',
     'security_baseline_auditd::rules::logins',
+    'security_baseline_auditd::rules::session',
+    'security_baseline_auditd::rules::perm_mod',
+    'security_baseline_auditd::rules::access',
+    'security_baseline_auditd::rules::privileged_command',
   ]
 
   $classes.each |$class| {
