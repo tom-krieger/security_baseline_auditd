@@ -23,6 +23,12 @@ class security_baseline_auditd::rules::identity (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd-identity',
+    rule      => 'auditd-identity',
+    desc      => 'Ensure events that modify user/group information are collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['identity'] == false) {
@@ -41,6 +47,17 @@ class security_baseline_auditd::rules::identity (
       auditd::rule { 'watch identity rule 5':
         content => '-w /etc/security/opasswd -p wa -k identity',
       }
+      $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect events changing identity.',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect events changing identity.',
+        rulestate => 'compliant',
+      }
     }
   } else {
     if($facts['security_baseline_auditd']['identity'] == false) {
@@ -50,14 +67,16 @@ class security_baseline_auditd::rules::identity (
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-identity':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure events that modify user/group information are collected (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect events changing identity.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-identity':
+    * => $logentry,
   }
 }

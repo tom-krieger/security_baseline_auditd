@@ -27,6 +27,12 @@ class security_baseline_auditd::rules::modules (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd-modules',
+    rule      => 'auditd-modules',
+    desc      => 'Ensure kernel module loading and unloading is collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['modules'] == false) {
@@ -48,23 +54,36 @@ class security_baseline_auditd::rules::modules (
           content => '-a always,exit -F arch=b32 -S init_module -S delete_module -k modules',
         }
       }
+      $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect kernel module loading and unloading events.',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect kernel module loading and unloading events.',
+        rulestate => 'compliant',
+      }
     }
   } else {
-    if($facts['security_baseline_auditd']['mounts'] == false) {
-      echo { 'auditd-mounts':
+    if($facts['security_baseline_auditd']['modules'] == false) {
+      echo { 'auditd-modules':
         message  => $message,
         loglevel => $log_level,
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-mounts':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure kernel module loading and unloading is collected (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect kernel module loading and unloading events.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-modules':
+    * => $logentry,
   }
 }

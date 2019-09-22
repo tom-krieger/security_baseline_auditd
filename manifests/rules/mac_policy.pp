@@ -21,6 +21,12 @@ class security_baseline_auditd::rules::mac_policy (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    ulenr    => 'auditd-mac-policy',
+    rule      => 'auditd-mac-policy',
+    desc      => 'Ensure events that modify the system\'s Mandatory Access Controls are collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['mac-policy'] == false) {
@@ -29,6 +35,17 @@ class security_baseline_auditd::rules::mac_policy (
       }
       auditd::rule { 'mac policy rule 2':
         content => '-w /usr/share/selinux/ -p wa -k MAC-policy',
+      }
+      $log_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect events changing mandatory access controls.',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect events changing mandatory access controls.',
+        rulestate => 'not compliant',
       }
     }
   } else {
@@ -39,14 +56,16 @@ class security_baseline_auditd::rules::mac_policy (
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-mac-policy':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure events that modify the system\'s Mandatory Access Controls are collected (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect events changing mandatory access controls.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-mac-policy':
+    * => $logentry,
   }
 }

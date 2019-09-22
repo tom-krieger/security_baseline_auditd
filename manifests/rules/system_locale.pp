@@ -32,6 +32,12 @@ class security_baseline_auditd::rules::system_locale (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd-locale',
+    rule      => 'auditd-locate',
+    desc      => 'Ensure events that modify the system\'s network environment are collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['system-locale'] == false) {
@@ -58,23 +64,36 @@ class security_baseline_auditd::rules::system_locale (
           content => '-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale',
         }
       }
+      $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect events modifying network environment.',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect events modifying network environment.',
+        rulestate => 'compliant',
+      }
     }
   } else {
     if($facts['security_baseline_auditd']['system-locale'] == false) {
-      echo { 'auditd-identity':
+      echo { 'auditd-locale':
         message  => $message,
         loglevel => $log_level,
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-identity':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure events that modify the system\'s network environment are collected (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect events modifying network environment.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-locate':
+    * => $logentry,
   }
 }

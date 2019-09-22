@@ -32,6 +32,17 @@ class security_baseline_auditd::rules::session (
       auditd::rule { 'watch session rule 1':
         content => '-w /var/run/utmp -p wa -k session',
       }
+      $logdata_entry = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect session initiation events.',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logdata_entry = {
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect session initiation events.',
+        rulestate => 'compliant',
+      }
     }
     if($facts['security_baseline_auditd']['session-logins'] == false) {
       auditd::rule { 'watch session rule 2':
@@ -39,6 +50,23 @@ class security_baseline_auditd::rules::session (
       }
       auditd::rule { 'watch session rule 3':
         content => '-w /var/log/btmp -p wa -k logins',
+      }
+      ::security_baseline::logging { 'auditd-session-logins':
+        rulenr    => 'auditd',
+        rule      => 'auditd',
+        desc      => 'Ensure session initiation information is collected (Scored)',
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect session initiation events (logins)',
+        rulestate => 'not compliant',
+      }
+    } else {
+      ::security_baseline::logging { 'auditd-session-logins':
+        rulenr    => 'auditd',
+        rule      => 'auditd',
+        desc      => 'Ensure session initiation information is collected (Scored)',
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect session initiation events (logins).',
+        rulestate => 'compliant',
       }
     }
   } else {

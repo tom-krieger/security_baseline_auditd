@@ -22,6 +22,12 @@ class security_baseline_auditd::rules::logins (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd-logins',
+    rule      => 'auditd-logins',
+    desc      => 'Ensure login and logout events are collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['logins'] == false) {
@@ -30,6 +36,17 @@ class security_baseline_auditd::rules::logins (
       }
       auditd::rule { 'logins policy rule 2':
         content => '-w /var/run/faillock/ -p wa -k logins',
+      }
+      $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect login and logout events.',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd has no rule to collect login and logout events.',
+        rulestate => 'not compliant',
       }
     }
   } else {
@@ -40,14 +57,16 @@ class security_baseline_auditd::rules::logins (
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-logins':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure login and logout events are collected (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect login and logout events.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-logins':
+    * => $logentry,
   }
 }

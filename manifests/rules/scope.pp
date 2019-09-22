@@ -24,6 +24,12 @@ class security_baseline_auditd::rules::scope (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd-scope',
+    rule      => 'auditd-scope',
+    desc      => 'Ensure changes to system administration scope (sudoers) is collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['scope'] == false) {
@@ -32,6 +38,17 @@ class security_baseline_auditd::rules::scope (
       }
       auditd::rule { 'watch scope rule 2':
         content => '-w /etc/sudoers.d/ -p wa -k scope',
+      }
+      $logentry_data = {
+        evel     => $log_level,
+        msg       => 'Auditd has no rule to collect changes to system administration scope (sudoers).',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logentry_data = {
+        evel     => 'ok',
+        msg       => 'Auditd has a rule to collect changes to system administration scope (sudoers).',
+        rulestate => 'compliant',
       }
     }
   } else {
@@ -42,14 +59,16 @@ class security_baseline_auditd::rules::scope (
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-scope':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure changes to system administration scope (sudoers) is collected (Scored)',
-        level     => $log_level,
+      $logentry_data = {
+        evel     => $log_level,
         msg       => 'Auditd has no rule to collect changes to system administration scope (sudoers).',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-scope':
+    * => $logentry,
   }
 }

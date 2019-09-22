@@ -21,6 +21,12 @@ class security_baseline_auditd::rules::privileged_commands (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd-priv-cmds',
+    rule      => 'auditd-priv-cmds',
+    desc      => 'Ensure use of privileged commands is collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['priv-cmds'] == false) {
@@ -29,6 +35,17 @@ class security_baseline_auditd::rules::privileged_commands (
           auditd::rule { $rule:
           }
         }
+      }
+      $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect use of privileged commands.',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect use of privileged commands.',
+        rulestate => 'compliant',
       }
     }
   } else {
@@ -39,14 +56,16 @@ class security_baseline_auditd::rules::privileged_commands (
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-priv-cmds':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure use of privileged commands is collected (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect use of privileged commands.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-priv-cmds':
+    * => $logentry,
   }
 }

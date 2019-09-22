@@ -26,6 +26,12 @@ class security_baseline_auditd::rules::perm_mod (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd-perm-mod',
+    rule      => 'auditd-perm-mod',
+    desc      => 'Ensure discretionary access control permission modification events are collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['perm-mod'] == false) {
@@ -49,6 +55,17 @@ class security_baseline_auditd::rules::perm_mod (
           content => '-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod',
         }
       }
+      $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect discretionary access control permission modification events.',
+        rulestate => 'not compliant',
+      }
+    } else {
+      $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect discretionary access control permission modification events.',
+        rulestate => 'compliant',
+      }
     }
   } else {
     if($facts['security_baseline_auditd']['perm-mod'] == false) {
@@ -58,14 +75,16 @@ class security_baseline_auditd::rules::perm_mod (
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-perm-mod':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure discretionary access control permission modification events are collected (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect discretionary access control permission modification events.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-perm-mod':
+    * => $logentry,
   }
 }
