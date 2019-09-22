@@ -103,6 +103,32 @@ Facter.add('security_baseline_auditd') do
     ]
     security_baseline_auditd['logins'] = check_values(val, expected)
 
+    val = Facter::Core::Execution.exec('auditctl -l | grep session')
+    expected = [
+      '-w /var/run/utmp -p wa -k session',
+    ]
+    security_baseline_auditd['session'] = check_values(val, expected)
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep logins')
+    expected = [
+      '-w /var/log/wtmp -p wa -k logins',
+      '-w /var/log/btmp -p wa -k logins',
+    ]
+    security_baseline_auditd['session-logins'] = check_values(val, expected)
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep perm_mod')
+    expected = [
+      '-a always,exit -F arch=b32 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod',
+      '-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod',
+      '-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod',
+    ]
+    if arch == 'x86_64'
+      expected.push('-a always,exit -F arch=b64 -S chmod -S fchmod -S fchmodat -F auid>=1000 -F auid!=4294967295 -k perm_mod')
+      expected.push('-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod')
+      expected.push('-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod')
+    end
+    security_baseline_auditd['perm-mod'] = check_values(val, expected)
+
     security_baseline_auditd
   end
 end

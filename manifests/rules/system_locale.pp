@@ -55,7 +55,7 @@ class security_baseline_auditd::rules::system_locale (
       }
       if($facts['architecture'] == 'x86_64') {
         auditd::rule { 'watch network environment rule 7':
-          content => ' -a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale',
+          content => '-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale',
         }
       }
     }
