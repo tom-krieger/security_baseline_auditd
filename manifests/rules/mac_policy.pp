@@ -22,7 +22,7 @@ class security_baseline_auditd::rules::mac_policy (
   require 'auditd'
 
   $logentry_default = {
-    ulenr    => 'auditd-mac-policy',
+    rulenr    => 'auditd-mac-policy',
     rule      => 'auditd-mac-policy',
     desc      => 'Ensure events that modify the system\'s Mandatory Access Controls are collected (Scored)',
   }
