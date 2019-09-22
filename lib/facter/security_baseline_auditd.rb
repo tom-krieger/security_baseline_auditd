@@ -166,7 +166,7 @@ Facter.add('security_baseline_auditd') do
       '-a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete',
     ]
     if arch == 'x86_64'
-      expectd.push('-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete')
+      expected.push('-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete')
     end
     security_baseline_auditd['delete'] = check_values(val, expected)
 
