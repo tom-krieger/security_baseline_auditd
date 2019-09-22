@@ -86,10 +86,5 @@ class security_baseline_auditd (
     message   => $message,
     log_level => $log_level,
     require   => Class['::auditd'],
-    before    => Exec['reload-auditd']
-  }
-
-  exec {'reload-auditd':
-    command => '/sbin/augenrules --load',
   }
 }
