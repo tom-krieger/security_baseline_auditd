@@ -78,22 +78,22 @@ Facter.add('security_baseline_auditd') do
 
     val = Facter::Core::Execution.exec('auditctl -l | grep system-locale')
     expected = [
-      '-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale',
+      '-a always,exit -F arch=b32 -S sethostname,setdomainname -F key=system-locale',
       '-w /etc/issue -p wa -k system-locale',
       '-w /etc/issue.net -p wa -k system-locale',
       '-w /etc/hosts -p wa -k system-locale',
       '-w /etc/sysconfig/network -p wa -k system-locale',
-      '-w /etc/sysconfig/network-scripts/ -p wa -k system-locale',
+      '-w /etc/sysconfig/network-scripts -p wa -k system-locale',
     ]
     if arch == 'x86_64'
-      expected.push('-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale')
+      expected.push('-a always,exit -F arch=b64 -S sethostname,setdomainname -F key=system-locale')
     end
     security_baseline_auditd['system-locale'] = check_values(val, expected)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep MAC-policy')
     expected = [
-      '-w /etc/selinux/ -p wa -k MAC-policy',
-      '-w /usr/share/selinux/ -p wa -k MAC-policy',
+      '-w /etc/selinux -p wa -k MAC-policy',
+      '-w /usr/share/selinux -p wa -k MAC-policy',
     ]
     security_baseline_auditd['mac-policy'] = check_values(val, expected)
 
@@ -102,7 +102,7 @@ Facter.add('security_baseline_auditd') do
       '-w /var/log/lastlog -p wa -k logins',
       '-w /var/run/faillock/ -p wa -k logins',
     ]
-    security_baseline_auditd['logins'] = check_values(val, expected)
+    security_baseline_auditd['logins'] = check_values(val, expected, true)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep session')
     expected = [
@@ -115,7 +115,7 @@ Facter.add('security_baseline_auditd') do
       '-w /var/log/wtmp -p wa -k logins',
       '-w /var/log/btmp -p wa -k logins',
     ]
-    security_baseline_auditd['session-logins'] = check_values(val, expected)
+    security_baseline_auditd['session-logins'] = check_values(val, expected, true)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep perm_mod')
     expected = [
@@ -132,12 +132,12 @@ Facter.add('security_baseline_auditd') do
 
     val = Facter::Core::Execution.exec('auditctl -l | grep access')
     expected = [
-      '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access',
-      '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access',
+      '-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat -F exit=-EACCES -F auid>=1000 -F auid!=-1 -F key=access',
+      '-a always,exit -F arch=b32 -S open,creat,truncate,ftruncate,openat -F exit=-EPERM -F auid>=1000 -F auid!=-1 -F key=access',
     ]
     if arch == 'x86_64'
-      expected.push('-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access')
-      expected.push('-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access')
+      expected.push('-a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat -F exit=-EACCES -F auid>=1000 -F auid!=-1 -F key=access')
+      expected.push('-a always,exit -F arch=b64 -S open,truncate,ftruncate,creat,openat -F exit=-EPERM -F auid>=1000 -F auid!=-1 -F key=access')
     end
     security_baseline_auditd['access'] = check_values(val, expected)
 
@@ -150,31 +150,31 @@ Facter.add('security_baseline_auditd') do
     end
     security_baseline_auditd['priv-cmds-rules'] = rules
 
-    val = Facter::Core::Execution.exec('auditctl -l')
+    val = Facter::Core::Execution.exec('auditctl -l | g rep privileged')
     security_baseline_auditd['priv-cmds'] = check_values(val, expected, true)
 
-    val = Facter::Core::Execution.exec('auditctl -l | grep mounts')
+    val = Facter::Core::Execution.exec('auditctl -l | grep "mounts$"')
     expected = [
-      '-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts',
+      '-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=-1 -F key=mounts',
     ]
     if arch == 'x86_64'
-      expected.push('-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts')
+      expected.push('-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=-1 -F key=mounts')
     end
     security_baseline_auditd['mounts'] = check_values(val, expected)
 
-    val = Facter::Core::Execution.exec('auditctl -l | grep delete')
+    val = Facter::Core::Execution.exec('auditctl -l | grep "delete$"')
     expected = [
-      '-a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete',
+      '-a always,exit -F arch=b32 -S unlink,rename,unlinkat,renameat -F auid>=1000 -F auid!=-1 -F key=delete',
     ]
     if arch == 'x86_64'
-      expected.push('-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete')
+      expected.push('-a always,exit -F arch=b64 -S rename,unlink,unlinkat,renameat -F auid>=1000 -F auid!=-1 -F key=delete')
     end
     security_baseline_auditd['delete'] = check_values(val, expected)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep scope')
     expected = [
       '-w /etc/sudoers -p wa -k scope',
-      '-w /etc/sudoers.d/ -p wa -k scope',
+      '-w /etc/sudoers.d -p wa -k scope',
     ]
     security_baseline_auditd['scope'] = check_values(val, expected)
 
@@ -184,16 +184,16 @@ Facter.add('security_baseline_auditd') do
     ]
     security_baseline_auditd['actions'] = check_values(val, expected)
 
-    val = Facter::Core::Execution.exec('auditctl -l | grep modules')
+    val = Facter::Core::Execution.exec('auditctl -l | grep "modules$"')
     expected = [
       '-w /sbin/insmod -p x -k modules',
       '-w /sbin/rmmod -p x -k modules',
       '-w /sbin/modprobe -p x -k modules',
     ]
     if arch == 'x86_64'
-      expected.push('-a always,exit -F arch=b64 -S init_module -S delete_module -k modules')
+      expected.push('-a always,exit -F arch=b64 -S init_module,delete_module -F key=modules')
     else
-      expected.push('-a always,exit -F arch=b32 -S init_module -S delete_module -k modules')
+      expected.push('-a always,exit -F arch=b32q -S init_module,delete_module -F key=modules')
     end
     security_baseline_auditd['modules'] = check_values(val, expected)
 

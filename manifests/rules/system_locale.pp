@@ -42,7 +42,7 @@ class security_baseline_auditd::rules::system_locale (
 
     if($facts['security_baseline_auditd']['system-locale'] == false) {
       auditd::rule { 'watch network environment rule 1':
-        content => '-a always,exit -F arch=b32 -S sethostname -S setdomainname -k system-locale',
+        content => '-a always,exit -F arch=b32 -S sethostname,setdomainname -F key=system-locale',
       }
       auditd::rule { 'watch network environment rule 2':
         content => '-w /etc/issue -p wa -k system-locale',
@@ -57,11 +57,11 @@ class security_baseline_auditd::rules::system_locale (
         content => '-w /etc/sysconfig/network -p wa -k system-locale',
       }
       auditd::rule { 'watch network environment rule 6':
-        content => '-w /etc/sysconfig/network-scripts/ -p wa -k system-locale',
+        content => '-w /etc/sysconfig/network-scripts -p wa -k system-locale',
       }
       if($facts['architecture'] == 'x86_64') {
         auditd::rule { 'watch network environment rule 7':
-          content => '-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale',
+          content => '-a always,exit -F arch=b64 -S sethostname,setdomainname -F key=system-locale',
         }
       }
       $logentry_data = {
