@@ -129,6 +129,17 @@ Facter.add('security_baseline_auditd') do
     end
     security_baseline_auditd['perm-mod'] = check_values(val, expected)
 
+    val = Facter::Core::Execution.exec('auditctl -l | grep access')
+    expected = [
+      '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access',
+      '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access',
+    ]
+    if arch == 'x86_64'
+      expected.push('-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access')
+      expected.push('-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access')
+    end
+    security_baseline_auditd['access'] = check_values(val, expected)
+
     security_baseline_auditd
   end
 end
