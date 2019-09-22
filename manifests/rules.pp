@@ -20,6 +20,12 @@ class security_baseline_auditd::rules (
     'security_baseline_auditd::rules::perm_mod',
     'security_baseline_auditd::rules::access',
     'security_baseline_auditd::rules::privileged_commands',
+    'security_baseline_auditd::rules::mounts',
+    'security_baseline_auditd::rules::delete',
+    'security_baseline_auditd::rules::scope',
+    'security_baseline_auditd::rules::actions',
+    'security_baseline_auditd::rules::modules',
+    'security_baseline_auditd::rules::immutable',
   ]
 
   $classes.each |$class| {

@@ -152,6 +152,59 @@ Facter.add('security_baseline_auditd') do
     val = Facter::Core::Execution.exec('auditctl -l')
     security_baseline_auditd['priv-cmds'] = check_values(val, expected, true)
 
+    val = Facter::Core::Execution.exec('auditctl -l | grep mounts')
+    expected = [
+      '-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts',
+    ]
+    if arch == 'x86_64'
+      expectd.push('-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts')
+    end
+    security_baseline_auditd['mounts'] = check_values(val, expected)
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep delete')
+    expected = [
+      '-a always,exit -F arch=b32 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete',
+    ]
+    if arch == 'x86_64'
+      expectd.push('-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete')
+    end
+    security_baseline_auditd['delete'] = check_values(val, expected)
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep scope')
+    expected = [
+      '-w /etc/sudoers -p wa -k scope',
+      '-w /etc/sudoers.d/ -p wa -k scope',
+    ]
+    security_baseline_auditd['scope'] = check_values(val, expected)
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep actions')
+    expected = [
+      '-w /var/log/sudo.log -p wa -k actions',
+    ]
+    security_baseline_auditd['actions'] = check_values(val, expected)
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep modules')
+    expected = [
+      '-w /sbin/insmod -p x -k modules',
+      '-w /sbin/rmmod -p x -k modules',
+      '-w /sbin/modprobe -p x -k modules'
+    ]
+    if arch == 'x86_64'
+      exceptions.push('-a always,exit -F arch=b64 -S init_module -S delete_module -k modules')
+    else
+      exceptions.push('-a always,exit -F arch=b32 -S init_module -S delete_module -k modules')
+    end
+    security_baseline_auditd['modules'] = check_values(val, expected)
+
+    val = Facter::Core::Execution.exec('grep "^\s*[^#]" /etc/audit/audit.rules | tail -1')
+    security_baseline_auditd['immutable'] = if val.empty? || val.nil?
+                                              false
+                                            elsif val == '-e 2'
+                                              true
+                                            else
+                                              false
+                                            end
+
     security_baseline_auditd
   end
 end
