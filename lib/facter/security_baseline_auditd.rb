@@ -109,12 +109,12 @@ Facter.add('security_baseline_auditd') do
     ]
     security_baseline_auditd['session'] = check_values(val, expected)
 
-    val = Facter::Core::Execution.exec('auditctl -l | grep logins')
+    val = Facter::Core::Execution.exec('auditctl -l | grep "logins$"')
     expected = [
       '-w /var/log/wtmp -p wa -k logins',
       '-w /var/log/btmp -p wa -k logins',
     ]
-    security_baseline_auditd['session-logins'] = check_values(val, expected, true)
+    security_baseline_auditd['session-logins'] = check_values(val, expected, true, true)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep perm_mod')
     expected = [
@@ -150,7 +150,7 @@ Facter.add('security_baseline_auditd') do
     security_baseline_auditd['priv-cmds-rules'] = rules
 
     val = Facter::Core::Execution.exec('auditctl -l | g rep privileged')
-    security_baseline_auditd['priv-cmds'] = check_values(val, expected, true)
+    security_baseline_auditd['priv-cmds'] = check_values(val, expected, true, true)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep "mounts$"')
     expected = [
