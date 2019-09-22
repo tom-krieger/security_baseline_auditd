@@ -24,12 +24,11 @@ class security_baseline_auditd::rules::immutable (
 
   if($enforce) {
 
-    if($facts['security_baseline_auditd']['immutable'] == false) {
-      auditd::rule { 'watch immutable rule 1':
-        content => '-e 2',
-        order   => 9999,
-      }
+    auditd::rule { 'watch immutable rule 1':
+      content => '-e 2',
+      order   => 9999,
     }
+
   } else {
     if($facts['security_baseline_auditd']['immutable'] == false) {
       echo { 'auditd-mounts':
