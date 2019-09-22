@@ -149,7 +149,7 @@ Facter.add('security_baseline_auditd') do
     end
     security_baseline_auditd['priv-cmds-rules'] = rules
 
-    val = Facter::Core::Execution.exec('auditctl -l | g rep privileged')
+    val = Facter::Core::Execution.exec('auditctl -l | grep "privileged$"')
     security_baseline_auditd['priv-cmds'] = check_values(val, expected, true, true)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep "mounts$"')
