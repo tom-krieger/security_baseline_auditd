@@ -27,8 +27,8 @@ class security_baseline_auditd::rules::access (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd',
-    rule      => 'auditd',
+    rulenr    => 'auditd-access',
+    rule      => 'auditd-access',
     desc      => 'Ensure unsuccessful unauthorized file access attempts are collected (Scored)',
   }
 

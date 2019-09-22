@@ -23,8 +23,8 @@ class security_baseline_auditd::rules::immutable (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd',
-    rule      => 'auditd',
+    rulenr    => 'auditd-immutable',
+    rule      => 'auditd-immutable',
     desc      => 'Ensure the audit configuration is immutable (Scored)',
   }
 
