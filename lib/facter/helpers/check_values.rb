@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # check if values of output are contained in expected array
 
 require 'pp'
