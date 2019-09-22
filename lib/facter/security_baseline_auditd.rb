@@ -145,8 +145,7 @@ Facter.add('security_baseline_auditd') do
     expected = []
     Facter.value(:partitions).each do |_part, data|
       mount = data['mount']
-      rules_raw = Facter::Core::Execution.exec('find / -xdev \( -perm -4000 -o -perm -2000 \) -type f | awk \'{print "-a always,exit -F path=" $1 " -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged" }\'').split("\n")
-      pp rules_raw
+      rules_raw = Facter::Core::Execution.exec('find / -xdev \( -perm -4000 -o -perm -2000 \) -type f | awk \'{print "-a always,exit -S all -F path=" $1 " -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged" }\'').split("\n")
       rules[mount] = rules_raw
       expected.push(*rules_raw)
     end
