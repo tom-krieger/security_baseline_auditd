@@ -190,9 +190,9 @@ Facter.add('security_baseline_auditd') do
       '-w /sbin/modprobe -p x -k modules',
     ]
     if arch == 'x86_64'
-      exceptions.push('-a always,exit -F arch=b64 -S init_module -S delete_module -k modules')
+      expected.push('-a always,exit -F arch=b64 -S init_module -S delete_module -k modules')
     else
-      exceptions.push('-a always,exit -F arch=b32 -S init_module -S delete_module -k modules')
+      expected.push('-a always,exit -F arch=b32 -S init_module -S delete_module -k modules')
     end
     security_baseline_auditd['modules'] = check_values(val, expected)
 
