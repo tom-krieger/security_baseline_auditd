@@ -24,8 +24,19 @@ class security_baseline_auditd::rules::immutable (
 
   if($enforce) {
 
-    auditd::rule { '-e 2':
-      order => 9999,
+    if($facts['security_baseline_auditd']['immutable'] == false) {
+      auditd::rule { '-e 2':
+        order => 9999,
+      }
+    } else {
+      ::security_baseline::logging { 'auditd-immutable':
+        rulenr    => 'auditd',
+        rule      => 'auditd',
+        desc      => 'Ensure the audit configuration is immutable (Scored)',
+        level     => 'ok',
+        msg       => 'Auditd configuration is immutable.',
+        rulestate => 'not compliant',
+      }
     }
 
   } else {

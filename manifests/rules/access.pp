@@ -43,6 +43,15 @@ class security_baseline_auditd::rules::access (
           content => '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access',
         }
       }
+    } else {
+      ::security_baseline::logging { 'auditd-access':
+        rulenr    => 'auditd',
+        rule      => 'auditd',
+        desc      => 'Ensure unsuccessful unauthorized file access attempts are collected (Scored)',
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect unsuccessful unauthorized file access attempts.',
+        rulestate => 'not compliant',
+      }
     }
   } else {
     if($facts['security_baseline_auditd']['access'] == false) {
