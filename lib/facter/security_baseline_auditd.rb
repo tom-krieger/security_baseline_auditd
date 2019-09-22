@@ -157,7 +157,7 @@ Facter.add('security_baseline_auditd') do
       '-a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts',
     ]
     if arch == 'x86_64'
-      expectd.push('-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts')
+      expected.push('-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts')
     end
     security_baseline_auditd['mounts'] = check_values(val, expected)
 
