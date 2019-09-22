@@ -2,22 +2,31 @@
 
 require 'pp'
 
-def check_values(val, expected, reverse = false)
+def check_values(val, expected, reverse = false, debug = false)
   if val.empty? || val.nil?
     false
   else
     output = val.split("\n")
-    pp output
-    pp expected
+    if debug
+      pp output
+      pp expected
+    end
+
     if reverse
-      pp (expected - output)
+      if debug
+        pp (expected - output)
+      end
       ret = (expected - output).empty?
     else
-      pp (output - expected)
+      if debug
+        pp (output - expected)
+      end
       ret = (output - expected).empty?
     end
 
-    pp ret
+    if debug
+      pp ret
+    end
 
     ret
   end
