@@ -36,7 +36,7 @@ class security_baseline_auditd::rules::mac_policy (
       auditd::rule { 'mac policy rule 2':
         content => '-w /usr/share/selinux/ -p wa -k MAC-policy',
       }
-      $log_data = {
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect events changing mandatory access controls.',
         rulestate => 'not compliant',
@@ -45,7 +45,7 @@ class security_baseline_auditd::rules::mac_policy (
       $logentry_data = {
         level     => 'ok',
         msg       => 'Auditd has a rule to collect events changing mandatory access controls.',
-        rulestate => 'not compliant',
+        rulestate => 'compliant',
       }
     }
   } else {
