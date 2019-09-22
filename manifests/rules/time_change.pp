@@ -27,7 +27,7 @@ class security_baseline_auditd::rules::time_change (
 
     if($facts['security_baseline_auditd']['time-change'] == false) {
       auditd::rule { 'watch for date-time-change rule 1':
-        content => '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time- change',
+        content => '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change',
       }
       auditd::rule { 'watch for date-time-change rule 2':
         content => '-a always,exit -F arch=b32 -S clock_settime -k time-change',
