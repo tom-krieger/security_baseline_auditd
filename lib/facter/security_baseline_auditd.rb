@@ -7,7 +7,7 @@ require 'pp'
 # Gather facts around auditd
 
 Facter.add('security_baseline_auditd') do
-  confine osfamily: 'RedHat'
+  confine kernel: 'Linux'
   setcode do
     security_baseline_auditd = {}
     arch = Facter.value(:architecture)
@@ -152,7 +152,7 @@ Facter.add('security_baseline_auditd') do
     security_baseline_auditd['priv-cmds-rules'] = rules
 
     val = Facter::Core::Execution.exec('auditctl -l | grep "privileged$"')
-    security_baseline_auditd['priv-cmds'] = check_values(val, expected, true, true)
+    security_baseline_auditd['priv-cmds'] = check_values(val, expected, true)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep "mounts$"')
     expected = [
