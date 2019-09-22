@@ -9,12 +9,23 @@
 # hide malicious activity and then put the audit rules back. Users would most likely notice a 
 # system reboot and that could alert administrators of an attempt to make unauthorized audit changes.
 #
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
+#
 # @example
 #   class { 'security_baseline_auditd::rules::immutable':
 #             enforce => true,
 #             message => 'What you want to log',
 #             log_level => 'warning',
 #   }
+#
+# @api private
 class security_baseline_auditd::rules::immutable (
   Boolean $enforce,
   String $message = '',

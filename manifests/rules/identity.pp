@@ -10,12 +10,23 @@
 # Unexpected changes to these files could be an indication that the system has been compromised and that an 
 # unauthorized user is attempting to hide their activities or compromise additional accounts.
 #
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
+#
 # @example
 #   class { 'security_baseline_auditd::rules::identity':
 #             enforce => true,
 #             message => 'What you want to log',
 #             log_level => 'warning',
 #   }
+#
+# @api private
 class security_baseline_auditd::rules::identity (
   Boolean $enforce,
   String $message = '',

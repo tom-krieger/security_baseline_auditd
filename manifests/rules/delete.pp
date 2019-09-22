@@ -12,12 +12,23 @@
 # While this audit option will look at all events, system administrators will want to look for specific 
 # privileged files that are being deleted or altered.
 #
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
+#
 # @example
 #   class { 'security_baseline_auditd::rules::delete':
 #             enforce => true,
 #             message => 'What you want to log',
 #             log_level => 'warning',
 #   }
+#
+# @api private
 class security_baseline_auditd::rules::delete (
   Boolean $enforce,
   String $message = '',

@@ -13,12 +13,23 @@
 # hours, which could indicate intruder activity (i.e. a user logging in at a time when they do not normally 
 # log in).
 #
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
+#
 # @example
 #   class { 'security_baseline_auditd::rules::session':
 #             enforce => true,
 #             message => 'What you want to log',
 #             log_level => 'warning',
 #   }
+#
+# @api private
 class security_baseline_auditd::rules::session (
   Boolean $enforce,
   String $message = '',

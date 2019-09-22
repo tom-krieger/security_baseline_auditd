@@ -14,12 +14,23 @@
 # Monitoring of the init_module and delete_module system calls would reflect an unauthorized user attempting 
 # to use a different program to load and unload modules.
 #
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
+#
 # @example
 #   class { 'security_baseline_auditd::rules::modules':
 #             enforce => true,
 #             message => 'What you want to log',
 #             log_level => 'warning',
 #   }
+#
+# @api private
 class security_baseline_auditd::rules::modules (
   Boolean $enforce,
   String $message = '',

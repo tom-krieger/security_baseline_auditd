@@ -1,5 +1,5 @@
 # @summary
-#    Security baseline and configuratio for auditd
+#    Security baseline and configuration for auditd
 #
 # System auditing, through auditd, allows system administrators to monitor their systems such that 
 # they can detect unauthorized access or modification of data. By default, auditd will audit 
@@ -13,6 +13,35 @@
 # they are marked as Level 2 for both Servers and Workstations. Note: For 64 bit systems that have 
 # arch as a rule parameter, you will need two rules: one for 64 bit and one for 32 bit systems. 
 # For 32 bit systems, only one rule is needed.
+#
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
+#
+# @param logfile 
+#    Logfile to log into
+#
+# @param max_log_size
+#    Maximal log file size
+#
+# @param space_left_action
+#    What to do when space get low
+#
+# @param action_mail_acct
+#    This option should contain a valid email address or alias. The default address is root. If the email address is not local to 
+#    the machine, you must make sure you have email properly configured on your machine and network. Also, this option requires 
+#    that /usr/lib/sendmail exists on the machine.
+#
+# @param admin_space_left_action
+#    This parameter tells the system what action to take when the system has detected that it is low on disk space.
+#
+# @param max_log_file_action 
+#    This parameter tells the system what action to take when the system has detected that the max file size limit has been reached. 
 #
 # @example
 #   include security_baseline_auditd::ecurity_baseline_auditd

@@ -1,10 +1,21 @@
 # @summary 
-#    Wrapper class around all audidt checks
+#    Wrapper class around all audit checks
 #
-# A description of what this class does
+# Call all classes dealing with audits rules
+#
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
 #
 # @example
 #   include security_baseline_auditd::rules
+#
+# @api private
 class security_baseline_auditd::rules (
   Boolean $enforce   = true,
   String $message    = '',

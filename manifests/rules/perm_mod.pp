@@ -13,12 +13,23 @@
 # Monitoring for changes in file attributes could alert a system administrator to activity that could indicate 
 # intruder activity or policy violation.
 #
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
+#
 # @example
 #   class { 'security_baseline_auditd::rules::perm_mod':
 #             enforce => true,
 #             message => 'What you want to log',
 #             log_level => 'warning',
 #   }
+#
+# @api private
 class security_baseline_auditd::rules::perm_mod (
   Boolean $enforce,
   String $message = '',

@@ -12,12 +12,23 @@
 # itself has been tampered with. Administrators will want to correlate the events written to the audit 
 # trail with the records written to /var/log/sudo.log to verify if unauthorized commands have been executed.
 #
+# @param enforce
+#    Sets rule enforcemt. If set to true, code will be exeuted to bring the system into a comliant state.
+#
+# @param message
+#    Message to print into the log
+#
+# @param log_level
+#    Loglevel for the message
+#
 # @example
 #   class { 'security_baseline_auditd::rules::actions':
 #             enforce => true,
 #             message => 'What you want to log',
 #             log_level => 'warning',
 #   }
+#
+# @api private
 class security_baseline_auditd::rules::actions (
   Boolean $enforce,
   String $message = '',
