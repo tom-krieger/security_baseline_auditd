@@ -24,9 +24,8 @@ class security_baseline_auditd::rules::immutable (
 
   if($enforce) {
 
-    auditd::rule { 'watch immutable rule 1':
-      content => '-e 2',
-      order   => 9999,
+    auditd::rule { '-e 2':
+      order => 9999,
     }
 
   } else {
