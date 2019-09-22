@@ -11,14 +11,14 @@ Facter.add('security_baseline_auditd') do
   setcode do
     security_baseline_auditd = {}
     arch = Facter.value(:architecture)
-    val = Facter::Core::Execution.exec('grep max_log_file /etc/audit/auditd.conf')
+    val = Facter::Core::Execution.exec('grep "^max_log_file.*=" /etc/audit/auditd.conf')
     security_baseline_auditd['max_log_file'] = if val.empty? || val.nil?
                                                  'none'
                                                else
                                                  val
                                                end
 
-    val = Facter::Core::Execution.exec('grep space_left_action /etc/audit/auditd.conf')
+    val = Facter::Core::Execution.exec('grep "^space_left_action.*=" /etc/audit/auditd.conf')
     security_baseline_auditd['space_left_action'] = if val.empty? || val.nil?
                                                       'none'
                                                     else
@@ -32,7 +32,7 @@ Facter.add('security_baseline_auditd') do
                                                      val
                                                    end
 
-    val = Facter::Core::Execution.exec('grep admin_space_left_action /etc/audit/auditd.conf')
+    val = Facter::Core::Execution.exec('grep "^admin_space_left_action.*=" /etc/audit/auditd.conf')
     security_baseline_auditd['admin_space_left_action'] = if val.empty? || val.nil?
                                                             'none'
                                                           else
