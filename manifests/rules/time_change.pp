@@ -12,7 +12,9 @@
 #
 # @example
 #   class { 'security_baseline_auditd::rules::time_change':
-#              'enforce' => true,
+#             enforce => true,
+#             message => 'What you want to log',
+#             log_level => 'warning',
 #   }
 class security_baseline_auditd::rules::time_change (
   Boolean $enforce,

@@ -63,13 +63,7 @@ Facter.add('security_baseline_auditd') do
       expected.push('-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change')
       expected.push('-a always,exit -F arch=b64 -S clock_settime -k time-change')
     end
-    if val.empty? || val.nil?
-      ret = false
-    else
-      output = val.split("\n")
-      ret = check_values(output, expected)
-    end
-    security_baseline_auditd['time-change'] = ret
+    security_baseline_auditd['time-change'] = check_values(val, output, expected)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep identity')
     expected = [
@@ -79,13 +73,7 @@ Facter.add('security_baseline_auditd') do
       '-w /etc/shadow -p wa -k identity',
       '-w /etc/security/opasswd -p wa -k identity',
     ]
-    if val.empty? || val.nil?
-      ret = false
-    else
-      output = val.split("\n")
-      ret = check_values(output, expected)
-    end
-    security_baseline_auditd['identity'] = ret
+    security_baseline_auditd['identity'] = check_values(val, output, expected)
 
     val = Facter::Core::Execution.exec('auditctl -l | grep system-locale')
     expected = [
@@ -99,13 +87,21 @@ Facter.add('security_baseline_auditd') do
     if arch == 'x86_64'
       expected.push('-a always,exit -F arch=b64 -S sethostname -S setdomainname -k system-locale')
     end
-    if val.empty? || val.nil?
-      ret = false
-    else
-      output = val.split("\n")
-      ret = check_values(output, expected)
-    end
-    security_baseline_auditd['system-locale'] = ret
+    security_baseline_auditd['system-locale'] = check_values(val, output, expected)
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep MAC-policy')
+    expected = [
+      '-w /etc/selinux/ -p wa -k MAC-policy',
+      '-w /usr/share/selinux/ -p wa -k MAC-policy',
+    ]
+    security_baseline_auditd['mac-policy'] = check_values(val, output, expected)
+
+    val = Facter::Core::Execution.exec('auditctl -l | grep logins')
+    expected = [
+      '-w /var/log/lastlog -p wa -k logins',
+      '-w /var/run/faillock/ -p wa -k logins',
+    ]
+    security_baseline_auditd['logins'] = check_values(val, output, expected)
 
     security_baseline_auditd
   end

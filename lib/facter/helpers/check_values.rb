@@ -1,5 +1,10 @@
-# check if values of output arew contained in expected array
+# check if values of output are contained in expected array
 
-def check_values(output, expected)
-  (output - expected).empty?
+def check_values(val, output, expected)
+  if val.empty? || val.nil?
+    false
+  else
+    output = val.split("\n")
+    (output - expected).empty?
+  end
 end

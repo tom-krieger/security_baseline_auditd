@@ -1,4 +1,5 @@
-# @summary A short summary of the purpose of this class
+# @summary 
+#    Wrapper class around all audidt checks
 #
 # A description of what this class does
 #
@@ -9,21 +10,19 @@ class security_baseline_auditd::rules (
   String $message    = '',
   String $log_level  = 'info',
 ) {
-  class { '::security_baseline_auditd::rules::time_change':
-    enforce   => $enforce,
-    message   => $message,
-    log_level => $log_level,
-  }
+  $classes = [
+    '::security_baseline_auditd::rules::time_change',
+    'security_baseline_auditd::rules::identity',
+    'security_baseline_auditd::rules::system_locale',
+    'security_baseline_auditd::rules::mac_policy',
+    'security_baseline_auditd::rules::logins',
+  ]
 
-  class { 'security_baseline_auditd::rules::identity':
-    enforce   => $enforce,
-    message   => $message,
-    log_level => $log_level,
-  }
-
-  class { 'security_baseline_auditd::rules::system_locale':
-    enforce   => $enforce,
-    message   => $message,
-    log_level => $log_level,
+  $classes.each |$class| {
+    class { $class:
+      enforce   => $enforce,
+      message   => $message,
+      log_level => $log_level,
+    }
   }
 }
