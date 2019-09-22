@@ -62,6 +62,7 @@ class security_baseline_auditd::rules::actions (
         msg       => 'Auditd has no rule to collect system administrator actions (sudolog).',
         rulestate => 'not compliant',
       }
+    }
   }
 
   $logentry = $logentry_default + $logentry_data
