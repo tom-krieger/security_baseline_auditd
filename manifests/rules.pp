@@ -19,7 +19,7 @@ class security_baseline_auditd::rules (
     'security_baseline_auditd::rules::session',
     'security_baseline_auditd::rules::perm_mod',
     'security_baseline_auditd::rules::access',
-    'security_baseline_auditd::rules::privileged_command',
+    'security_baseline_auditd::rules::privileged_commands',
   ]
 
   $classes.each |$class| {
