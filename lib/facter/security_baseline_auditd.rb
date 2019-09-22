@@ -56,12 +56,12 @@ Facter.add('security_baseline_auditd') do
 
     val = Facter::Core::Execution.exec('auditctl -l | grep time-change')
     expected = [
-      '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time- change',
+      '-a always,exit -F arch=b32 -S adjtimex,settimeofday,stime -k time- change',
       '-a always,exit -F arch=b32 -S clock_settime -k time-change',
       '-w /etc/localtime -p wa -k time-change',
     ]
     if arch == 'x86_64'
-      expected.push('-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change')
+      expected.push('-a always,exit -F arch=b64 -S adjtimex,settimeofday -k time-change')
       expected.push('-a always,exit -F arch=b64 -S clock_settime -k time-change')
     end
     security_baseline_auditd['time-change'] = check_values(val, expected)
