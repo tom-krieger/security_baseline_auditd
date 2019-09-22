@@ -34,6 +34,7 @@ class security_baseline_auditd (
       'action_mail_acct'        => $action_mail_acct,
       'admin_space_left_action' => $admin_space_left_action,
       'max_log_file_action'     => $max_log_file_action,
+      'buffer_size'             => 8192,
     }
 
     class { '::auditd':
