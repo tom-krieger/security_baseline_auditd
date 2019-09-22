@@ -22,21 +22,30 @@ class security_baseline_auditd::rules::immutable (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd',
+    rule      => 'auditd',
+    desc      => 'Ensure the audit configuration is immutable (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['immutable'] == false) {
       auditd::rule { '-e 2':
         order => 9999,
       }
-    } else {
-      ::security_baseline::logging { 'auditd-immutable':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure the audit configuration is immutable (Scored)',
-        level     => 'ok',
-        msg       => 'Auditd configuration is immutable.',
+      $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd configuration is not immutable.',
         rulestate => 'not compliant',
       }
+    } else {
+      $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd configuration is immutable.',
+        rulestate => 'compliant',
+      }
+
     }
 
   } else {
@@ -47,14 +56,16 @@ class security_baseline_auditd::rules::immutable (
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-immutable':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure the audit configuration is immutable (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd configuration is not immutable.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-immutable':
+    * => $logentry,
   }
 }

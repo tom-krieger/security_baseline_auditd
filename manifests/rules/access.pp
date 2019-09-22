@@ -26,6 +26,12 @@ class security_baseline_auditd::rules::access (
 ) {
   require 'auditd'
 
+  $logentry_default = {
+    rulenr    => 'auditd',
+    rule      => 'auditd',
+    desc      => 'Ensure unsuccessful unauthorized file access attempts are collected (Scored)',
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['access'] == false) {
@@ -43,14 +49,16 @@ class security_baseline_auditd::rules::access (
           content => '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access',
         }
       }
+      $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect unsuccessful unauthorized file access attempts.',
+        rulestate => 'not compliant',
+      }
     } else {
-      ::security_baseline::logging { 'auditd-access':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure unsuccessful unauthorized file access attempts are collected (Scored)',
+      $logentry_data = {
         level     => 'ok',
         msg       => 'Auditd has a rule to collect unsuccessful unauthorized file access attempts.',
-        rulestate => 'not compliant',
+        rulestate => 'compliant',
       }
     }
   } else {
@@ -61,14 +69,16 @@ class security_baseline_auditd::rules::access (
         withpath => false,
       }
 
-      ::security_baseline::logging { 'auditd-access':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure unsuccessful unauthorized file access attempts are collected (Scored)',
+      $logentry_data = {
         level     => $log_level,
         msg       => 'Auditd has no rule to collect unsuccessful unauthorized file access attempts.',
         rulestate => 'not compliant',
       }
     }
+  }
+
+  $logentry = $logentry_default + $logentry_data
+  ::security_baseline::logging { 'auditd-access':
+    * => $logentry,
   }
 }
