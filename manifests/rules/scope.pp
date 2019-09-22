@@ -40,13 +40,13 @@ class security_baseline_auditd::rules::scope (
         content => '-w /etc/sudoers.d/ -p wa -k scope',
       }
       $logentry_data = {
-        evel     => $log_level,
+        level     => $log_level,
         msg       => 'Auditd has no rule to collect changes to system administration scope (sudoers).',
         rulestate => 'not compliant',
       }
     } else {
       $logentry_data = {
-        evel     => 'ok',
+        level     => 'ok',
         msg       => 'Auditd has a rule to collect changes to system administration scope (sudoers).',
         rulestate => 'compliant',
       }
@@ -60,7 +60,7 @@ class security_baseline_auditd::rules::scope (
       }
 
       $logentry_data = {
-        evel     => $log_level,
+        level     => $log_level,
         msg       => 'Auditd has no rule to collect changes to system administration scope (sudoers).',
         rulestate => 'not compliant',
       }
