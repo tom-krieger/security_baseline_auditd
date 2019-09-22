@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'facter/helpers/check_values'
-require 'pp'
 
 # security_baseline_auditd.rb
 # Gather facts around auditd
