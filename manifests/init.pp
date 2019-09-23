@@ -56,58 +56,122 @@ class security_baseline_auditd (
   String $admin_space_left_action = 'halt',
   String $max_log_file_action     = 'keep_logs',
 ) {
-  if($enforce) {
-    $auditd_config = {
-      'max_log_file'            => $max_log_size,
-      'space_left_action'       => $space_left_action,
-      'action_mail_acct'        => $action_mail_acct,
-      'admin_space_left_action' => $admin_space_left_action,
-      'max_log_file_action'     => $max_log_file_action,
-      'buffer_size'             => 8192,
+  $auditd_config = {
+    'max_log_file'            => $max_log_size,
+    'space_left_action'       => $space_left_action,
+    'action_mail_acct'        => $action_mail_acct,
+    'admin_space_left_action' => $admin_space_left_action,
+    'max_log_file_action'     => $max_log_file_action,
+    'buffer_size'             => 8192,
+  }
+  $maxlog_default = {
+    rulenr    => '4.1.1.1',
+    rule      => 'auditd-max-log-file',
+    desc      => 'Ensure auditd settings are correct (Scored)',
+  }
+  $disable_default = {
+    rulenr    => '4.1.1.2',
+    rule      => 'auditd-disable-when-full',
+    desc      => 'Ensure system is disabled when audit logs are full (Scored)',
+  }
+  $maxlogaction_default = {
+    rulenr    => '4.1.1.2',
+        rule      => 'auditd-disable-when-full',
+        desc      => 'Ensure system is disabled when audit logs are full (Scored)',
+  }
+  $service_default = {
+    rulenr    => '4.1.2',
+    rule      => 'auditd-service',
+    desc      => 'Ensure auditd service is enabled (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['max_log_file'] == 'none') {
+    $maxlog_entry = {
+      level     => $log_level,
+      msg       => 'Auditd setting for max_log_file is not correct.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $maxlog_entry = {
+      level     => 'ok',
+      msg       => 'Auditd setting for max_log_file is correct.',
+      rulestate => 'compliant',
+    }
+  }
+  if(
+    ($facts['security_baseline_auditd']['action_mail_acct'] == 'none') or
+    ($facts['security_baseline_auditd']['admin_space_left_action'] == 'none') or
+    ($facts['security_baseline_auditd']['space_left_action'] == 'none')
+  ) {
+    $disable_entry = {
+      level     => $log_level,
+      msg       => 'Auditd setting for action_mail_acct and/or admin_space_left_action and/or space_left_action are not correct.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $disable_entry = {
+      level     => 'ok',
+      msg       => 'Auditd setting for action_mail_acct, admin_space_left_action and space_left_action are correct.',
+      rulestate => 'nompliant',
+    }
+  }
+  if($facts['security_baseline_auditd']['max_log_file_action'] == 'none') {
+    $maxlogaction_entry = {
+      level     => $log_level,
+      msg       => 'Auditd setting for max_log_file_action is not correct.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $maxlogaction_entry = {
+      level     => 'ok',
+      msg       => 'Auditd setting for max_log_file_action is correct.',
+      rulestate => 'ompliant',
+    }
+  }
+
+  if($facts['security_baseline_auditd']['srv_auditd'] == 'none') {
+    echo { 'auditd-service':
+      message  => $message,
+      loglevel => $log_level,
+      withpath => false,
     }
 
+    $service_entry = {
+      level     => $log_level,
+      msg       => 'Auditd service is not running.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $service_entry = {
+      level     => 'ok',
+      msg       => 'Auditd service is running.',
+      rulestate => 'compliant',
+    }
+  }
+
+  if($enforce) {
     class { '::auditd':
       * => $auditd_config,
     }
-  } else {
-    if(
-      ($facts['security_baseline_auditd']['max_log_file'] == 'none') or
-      ($facts['security_baseline_auditd']['action_mail_acct'] == 'none') or
-      ($facts['security_baseline_auditd']['admin_space_left_action'] == 'none') or
-      ($facts['security_baseline_auditd']['max_log_file_action'] == 'none')
-    ) {
-      echo { 'auditd-settings':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
+  }
 
-      ::security_baseline::logging { 'auditd-settings':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure auditd settings are correct (Scored)',
-        level     => $log_level,
-        msg       => 'Auditd settings are not correct.',
-        rulestate => 'not compliant',
-      }
-    }
+  $maxlog = $maxlog_default + $maxlog_entry
+  ::security_baseline::logging { 'auditd-max-log-file':
+    * => $maxlog,
+  }
 
-    if($facts['security_baseline_auditd']['srv_auditd'] == 'none') {
-      echo { 'auditd-service':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
+  $disable = $disable_default + $disable_entry
+  ::security_baseline::logging { 'auditd-disable-when-full':
+    * => $disable,
+  }
 
-      ::security_baseline::logging { 'auditd-service':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure auditd servie is running (Scored)',
-        level     => $log_level,
-        msg       => 'Auditd service is not running.',
-        rulestate => 'not compliant',
-      }
-    }
+  $maxlogaction = $maxlogaction_default + $maxlogaction_entry::security_baseline::logging { 'auditd-max-log-file-action':
+    * => $maxlogaction,
+  }
+
+  $service = $service_default + $service_entry
+  ::security_baseline::logging { 'auditd-service':
+    * => $service,
   }
 
   class { '::security_baseline_auditd::rules':
