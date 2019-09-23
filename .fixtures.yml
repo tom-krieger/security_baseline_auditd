@@ -8,6 +8,13 @@ fixtures:
     stdlib:
       repo: "puppetlabs-stdlib"
       ref: "6.0.0"
+    concat:
+      repo: "puppetlabs-concat"
+      ref: "5.3.0"
     auditd:
       repo: "kemra102-auditd"
       ref: "2.2.0"
+  repositories:
+    security_baseline:
+      repo: "git://github.com/tom-krieger/security_baseline"
+      ref: "master"
