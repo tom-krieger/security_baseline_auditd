@@ -1,0 +1,23 @@
+---
+security_baseline::baseline_version: '1.0.0'
+security_baseline::debug: false
+security_baseline::log_info: true
+security_baseline::rules:
+  '4.1':
+    rulename: 'auditd'
+    active: true
+    description: 'When auditing, it is important to carefully configure the storage requirements for audit logs. By default, auditd will max out the log files at 5MB and retain only 4 copies of them. Older versions will be deleted. It is possible on a system that the 20 MBs of audit logs may fill up the system causing loss of audit data. While the recommendations here provide guidance, check your site policy for audit storage requirements.'
+    enforce: true
+    class: '::security_baseline_auditd'
+    check:
+      fact_hash: security_baseline_auditd
+      fact_name: ''
+      fact_value: ''
+    config_data:
+      max_log_size: 32
+      space_left_action: email
+      action_mail_acct: root
+      admin_space_left_action: halt
+      max_log_file_action: keep_logs
+    message: 'Not in compliance with rule 4.1. >Auditd configuration is not compliant.'
+    log_level: 'warning'
