@@ -43,7 +43,7 @@ class security_baseline_auditd::rules::scope (
 
   if($facts['security_baseline_auditd']['scope'] == false) {
     echo { 'auditd-scope':
-      message  => $message,
+      message  => 'Auditd has no rule to collect changes to system administration scope (sudoers).',
       loglevel => $log_level,
       withpath => false,
     }

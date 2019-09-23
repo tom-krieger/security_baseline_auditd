@@ -42,7 +42,7 @@ class security_baseline_auditd::rules::time_change (
 
   if($facts['security_baseline_auditd']['time-change'] == false) {
     echo { 'auditd-time-change':
-      message  => $message,
+      message  => 'Auditd has no rule to collect events changing date and time.',
       loglevel => $log_level,
       withpath => false,
     }
