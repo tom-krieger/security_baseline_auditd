@@ -1,4 +1,4 @@
----
+#---
 security_baseline::baseline_version: '1.0.0'
 security_baseline::debug: false
 security_baseline::log_info: true

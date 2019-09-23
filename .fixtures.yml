@@ -2,5 +2,12 @@
 # See https://github.com/puppetlabs/puppetlabs_spec_helper#using-fixtures for details
 ---
 fixtures:
+  symlinks:
+    security_baseline_ntp: "#{source_dir}"
   forge_modules:
-#     stdlib: "puppetlabs/stdlib"
+    stdlib:
+      repo: "puppetlabs-stdlib"
+      ref: "6.0.0"
+    auditd:
+      repo: "kemra102-auditd"
+      ref: "2.2.0"
