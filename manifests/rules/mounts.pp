@@ -41,6 +41,7 @@ class security_baseline_auditd::rules::mounts (
   require 'auditd'
 
   $logentry_default = {
+    rulenr    => '4.1.3',
     rule      => 'auditd-mounts',
     desc      => 'Ensure successful file system mounts are collected (Scored)',
   }
