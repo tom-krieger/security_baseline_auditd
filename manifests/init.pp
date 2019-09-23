@@ -165,7 +165,8 @@ class security_baseline_auditd (
     * => $disable,
   }
 
-  $maxlogaction = $maxlogaction_default + $maxlogaction_entry::security_baseline::logging { 'auditd-max-log-file-action':
+  $maxlogaction = $maxlogaction_default + $maxlogaction_entry
+  ::security_baseline::logging { 'auditd-max-log-file-action':
     * => $maxlogaction,
   }
 
