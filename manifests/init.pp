@@ -75,7 +75,7 @@ class security_baseline_auditd (
     desc      => 'Ensure system is disabled when audit logs are full (Scored)',
   }
   $maxlogaction_default = {
-    rulenr    => '4.1.1.2',
+    rulenr    => '4.1.1.3',
         rule      => 'auditd-disable-when-full',
         desc      => 'Ensure system is disabled when audit logs are full (Scored)',
   }
