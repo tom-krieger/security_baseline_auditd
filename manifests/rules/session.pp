@@ -93,6 +93,7 @@ class security_baseline_auditd::rules::session (
         content => '-w /var/run/utmp -p wa -k session',
       }
     }
+
     if($facts['security_baseline_auditd']['session-logins'] == false) {
       auditd::rule { 'watch session rule 2':
         content => '-w /var/log/wtmp -p wa -k logins',
@@ -100,6 +101,7 @@ class security_baseline_auditd::rules::session (
       auditd::rule { 'watch session rule 3':
         content => '-w /var/log/btmp -p wa -k logins',
       }
+    }
   }
 
   $logins = $logins_default + $logins_entry
