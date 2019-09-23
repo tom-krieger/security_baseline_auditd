@@ -41,6 +41,26 @@ class security_baseline_auditd::rules::scope (
     desc      => 'Ensure changes to system administration scope (sudoers) is collected (Scored)',
   }
 
+  if($facts['security_baseline_auditd']['scope'] == false) {
+    echo { 'auditd-scope':
+      message  => $message,
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect changes to system administration scope (sudoers).',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect changes to system administration scope (sudoers).',
+      rulestate => 'compliant',
+    }
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['scope'] == false) {
@@ -49,31 +69,6 @@ class security_baseline_auditd::rules::scope (
       }
       auditd::rule { 'watch scope rule 2':
         content => '-w /etc/sudoers.d/ -p wa -k scope',
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect changes to system administration scope (sudoers).',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect changes to system administration scope (sudoers).',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['scope'] == false) {
-      echo { 'auditd-scope':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect changes to system administration scope (sudoers).',
-        rulestate => 'not compliant',
       }
     }
   }

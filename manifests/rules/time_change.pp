@@ -40,6 +40,25 @@ class security_baseline_auditd::rules::time_change (
     desc      => 'Ensure events that modify date and time information are collected (Scored)',
   }
 
+  if($facts['security_baseline_auditd']['time-change'] == false) {
+    echo { 'auditd-time-change':
+      message  => $message,
+      loglevel => $log_level,
+      withpath => false,
+    }
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect events changing date and time.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect events changing date and time.',
+      rulestate => 'compliant',
+    }
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['time-change'] == false) {
@@ -60,31 +79,6 @@ class security_baseline_auditd::rules::time_change (
         auditd::rule { 'wwatch for date-time-change rule 5':
           content => '-a always,exit -F arch=b64 -S clock_settime -k time-change',
         }
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect events changing date and time.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect events changing date and time.',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['time-change'] == false) {
-      echo { 'auditd-time-change':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect events changing date and time.',
-        rulestate => 'not compliant',
       }
     }
   }
