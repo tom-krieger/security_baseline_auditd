@@ -38,9 +38,29 @@ class security_baseline_auditd::rules::access (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-access',
+    rulenr    => '4.1.11',
     rule      => 'auditd-access',
     desc      => 'Ensure unsuccessful unauthorized file access attempts are collected (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['access'] == false) {
+    echo { 'auditd-access':
+      message  => 'Auditd has no rule to collect unsuccessful unauthorized file access attempts.',
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect unsuccessful unauthorized file access attempts.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect unsuccessful unauthorized file access attempts.',
+      rulestate => 'compliant',
+    }
   }
 
   if($enforce) {
@@ -59,31 +79,6 @@ class security_baseline_auditd::rules::access (
         auditd::rule { 'watch access rule 4':
           content => '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access',
         }
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect unsuccessful unauthorized file access attempts.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect unsuccessful unauthorized file access attempts.',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['access'] == false) {
-      echo { 'auditd-access':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect unsuccessful unauthorized file access attempts.',
-        rulestate => 'not compliant',
       }
     }
   }

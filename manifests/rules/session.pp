@@ -37,22 +37,60 @@ class security_baseline_auditd::rules::session (
 ) {
   require 'auditd'
 
+  $session_default = {
+    rulenr    => '4.1.9.1',
+    rule      => 'auditd',
+    desc      => 'Ensure session initiation information is collected (Scored)',
+  }
+  $logins_default = {
+    rulenr    => '4.1.9.2',
+    rule      => 'auditd',
+    desc      => 'Ensure session initiation information is collected for logins (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['session'] == false) {
+    echo { 'auditd-session':
+      message  => 'Auditd has no rule to collect session initiation events.',
+      loglevel => $log_level,
+      withpath => false,
+    }
+    $session_entry = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect session initiation events.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $session_entry = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect session initiation events.',
+      rulestate => 'compliant',
+    }
+  }
+  if($facts['security_baseline_auditd']['session-logins'] == false) {
+    echo { 'auditd-session-logins':
+      message  => 'Auditd has no rule to collect session initiation events (logins)',
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logins_entry = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect session initiation events (logins)',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logins_entry = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect session initiation events (logins)',
+      rulestate => 'compliant',
+    }
+  }
+
   if($enforce) {
 
     if($facts['security_baseline_auditd']['session'] == false) {
       auditd::rule { 'watch session rule 1':
         content => '-w /var/run/utmp -p wa -k session',
-      }
-      $logdata_entry = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect session initiation events.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logdata_entry = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect session initiation events.',
-        rulestate => 'compliant',
       }
     }
     if($facts['security_baseline_auditd']['session-logins'] == false) {
@@ -62,57 +100,16 @@ class security_baseline_auditd::rules::session (
       auditd::rule { 'watch session rule 3':
         content => '-w /var/log/btmp -p wa -k logins',
       }
-      ::security_baseline::logging { 'auditd-session-logins':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure session initiation information is collected (Scored)',
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect session initiation events (logins)',
-        rulestate => 'not compliant',
-      }
-    } else {
-      ::security_baseline::logging { 'auditd-session-logins':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure session initiation information is collected (Scored)',
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect session initiation events (logins).',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['session'] == false) {
-      echo { 'auditd-session':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      ::security_baseline::logging { 'auditd-session':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure session initiation information is collected (Scored)',
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect session initiation events.',
-        rulestate => 'not compliant',
-      }
-    }
-
-    if($facts['security_baseline_auditd']['session-logins'] == false) {
-      echo { 'auditd-session-logins':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      ::security_baseline::logging { 'auditd-session-logins':
-        rulenr    => 'auditd',
-        rule      => 'auditd',
-        desc      => 'Ensure session initiation information is collected (Scored)',
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect session initiation events (logins).',
-        rulestate => 'not compliant',
-      }
-    }
   }
+
+  $logins = $logins_default + $logins_entry
+  ::security_baseline::logging { 'auditd-session-logins':
+    * => $logins,
+  }
+
+  $session = $session_default + $session_entry
+  ::security_baseline::logging { 'auditd-session':
+    * => $session,
+  }
+
 }

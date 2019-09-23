@@ -39,9 +39,29 @@ class security_baseline_auditd::rules::modules (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-modules',
+    rulenr    => '4.1.17',
     rule      => 'auditd-modules',
     desc      => 'Ensure kernel module loading and unloading is collected (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['modules'] == false) {
+    echo { 'auditd-modules':
+      message  => 'Auditd has no rule to collect kernel module loading and unloading events.',
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logentry_data = {
+        level     => $log_level,
+        msg       => 'Auditd has no rule to collect kernel module loading and unloading events.',
+        rulestate => 'not compliant',
+      }
+  } else {
+    $logentry_data = {
+        level     => 'ok',
+        msg       => 'Auditd has a rule to collect kernel module loading and unloading events.',
+        rulestate => 'compliant',
+      }
   }
 
   if($enforce) {
@@ -64,31 +84,6 @@ class security_baseline_auditd::rules::modules (
         auditd::rule { 'watch modules rule 4':
           content => '-a always,exit -F arch=b32 -S init_module -S delete_module -k modules',
         }
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect kernel module loading and unloading events.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect kernel module loading and unloading events.',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['modules'] == false) {
-      echo { 'auditd-modules':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect kernel module loading and unloading events.',
-        rulestate => 'not compliant',
       }
     }
   }

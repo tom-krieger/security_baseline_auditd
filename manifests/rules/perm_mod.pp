@@ -38,9 +38,29 @@ class security_baseline_auditd::rules::perm_mod (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-perm-mod',
+    rulenr    => '4.1.10',
     rule      => 'auditd-perm-mod',
     desc      => 'Ensure discretionary access control permission modification events are collected (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['perm-mod'] == false) {
+    echo { 'auditd-perm-mod':
+      message  => 'Auditd has no rule to collect discretionary access control permission modification events.',
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect discretionary access control permission modification events.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect discretionary access control permission modification events.',
+      rulestate => 'compliant',
+    }
   }
 
   if($enforce) {
@@ -65,31 +85,6 @@ class security_baseline_auditd::rules::perm_mod (
         auditd::rule { 'watch perm mod rule 6':
           content => '-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod',
         }
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect discretionary access control permission modification events.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect discretionary access control permission modification events.',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['perm-mod'] == false) {
-      echo { 'auditd-perm-mod':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect discretionary access control permission modification events.',
-        rulestate => 'not compliant',
       }
     }
   }

@@ -112,7 +112,7 @@ class security_baseline_auditd (
     $disable_entry = {
       level     => 'ok',
       msg       => 'Auditd setting for action_mail_acct, admin_space_left_action and space_left_action are correct.',
-      rulestate => 'nompliant',
+      rulestate => 'compliant',
     }
   }
   if($facts['security_baseline_auditd']['max_log_file_action'] == 'none') {

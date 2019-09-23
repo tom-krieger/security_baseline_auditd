@@ -37,9 +37,29 @@ class security_baseline_auditd::rules::actions (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-actions',
+    rulenr    => '4.1.16',
     rule      => 'auditd-actions',
     desc      => 'Ensure system administrator actions (sudolog) are collected (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['actions'] == false) {
+    echo { 'auditd-actions':
+      message  => 'Auditd has no rule to collect system administrator actions (sudolog).',
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect system administrator actions (sudolog).',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect system administrator actions (sudolog).',
+      rulestate => 'compliant',
+    }
   }
 
   if($enforce) {
@@ -48,31 +68,7 @@ class security_baseline_auditd::rules::actions (
       auditd::rule { 'watch admin actions rule 1':
         content => '-w /var/log/sudo.log -p wa -k actions',
       }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect system administrator actions (sudolog).',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect system administrator actions (sudolog).',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['actions'] == false) {
-      echo { 'auditd-actions':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
 
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect system administrator actions (sudolog).',
-        rulestate => 'not compliant',
-      }
     }
   }
 

@@ -41,9 +41,28 @@ class security_baseline_auditd::rules::mounts (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-mounts',
     rule      => 'auditd-mounts',
     desc      => 'Ensure successful file system mounts are collected (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['mounts'] == false) {
+    echo { 'auditd-mounts':
+      message  => 'Auditd has no rule to collect successful file system mounts.',
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect successful file system mounts.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect successful file system mounts.',
+      rulestate => 'compliant',
+    }
   }
 
   if($enforce) {
@@ -56,31 +75,6 @@ class security_baseline_auditd::rules::mounts (
         auditd::rule { 'watch mounts rule 2':
           content => '-a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=4294967295 -k mounts',
         }
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect successful file system mounts.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect successful file system mounts.',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['mounts'] == false) {
-      echo { 'auditd-mounts':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect successful file system mounts.',
-        rulestate => 'not compliant',
       }
     }
   }

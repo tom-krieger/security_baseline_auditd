@@ -35,7 +35,7 @@ class security_baseline_auditd::rules::time_change (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-time-change',
+    rulenr    => '4.1.4',
     rule      => 'auditd-time-change',
     desc      => 'Ensure events that modify date and time information are collected (Scored)',
   }

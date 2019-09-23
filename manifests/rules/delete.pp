@@ -37,9 +37,29 @@ class security_baseline_auditd::rules::delete (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-delete',
+    rulenr    => '4.1.14',
     rule      => 'auditd-delete',
     desc      => 'Ensure file deletion events by users are collected (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['delete'] == false) {
+    echo { 'auditd-delete':
+      message  => 'Auditd has no rule to collect file deletion events by users.',
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect file deletion events by users.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect file deletion events by users.',
+      rulestate => 'compliant',
+    }
   }
 
   if($enforce) {
@@ -52,31 +72,6 @@ class security_baseline_auditd::rules::delete (
         auditd::rule { 'watch deletes rule 2':
           content => '-a always,exit -F arch=b64 -S unlink -S unlinkat -S rename -S renameat -F auid>=1000 -F auid!=4294967295 -k delete',
         }
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect file deletion events by users.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect file deletion events by users.',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['delete'] == false) {
-      echo { 'auditd-delete':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect file deletion events by users.',
-        rulestate => 'not compliant',
       }
     }
   }

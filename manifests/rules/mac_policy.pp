@@ -33,9 +33,29 @@ class security_baseline_auditd::rules::mac_policy (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-mac-policy',
+    rulenr    => '4.1.7',
     rule      => 'auditd-mac-policy',
     desc      => 'Ensure events that modify the system\'s Mandatory Access Controls are collected (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['mac-policy'] == false) {
+    echo { 'auditd-mac-policy':
+      message  => 'Auditd has no rule to collect events changing mandatory access controls.',
+      loglevel => $log_level,
+      withpath => false,
+    }
+
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect events changing mandatory access controls.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect events changing mandatory access controls.',
+      rulestate => 'compliant',
+    }
   }
 
   if($enforce) {
@@ -46,31 +66,6 @@ class security_baseline_auditd::rules::mac_policy (
       }
       auditd::rule { 'mac policy rule 2':
         content => '-w /usr/share/selinux/ -p wa -k MAC-policy',
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect events changing mandatory access controls.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect events changing mandatory access controls.',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['mac-policy'] == false) {
-      echo { 'auditd-mac-policy':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect events changing mandatory access controls.',
-        rulestate => 'not compliant',
       }
     }
   }

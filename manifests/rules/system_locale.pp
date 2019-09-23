@@ -44,9 +44,28 @@ class security_baseline_auditd::rules::system_locale (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-locale',
+    rulenr    => '4.1.6',
     rule      => 'auditd-locate',
     desc      => 'Ensure events that modify the system\'s network environment are collected (Scored)',
+  }
+
+  if($facts['security_baseline_auditd']['system-locale'] == false) {
+    echo { 'auditd-locale':
+      message  => 'Auditd has no rule to collect events modifying network environment.',
+      loglevel => $log_level,
+      withpath => false,
+    }
+    $logentry_data = {
+      level     => $log_level,
+      msg       => 'Auditd has no rule to collect events modifying network environment.',
+      rulestate => 'not compliant',
+    }
+  } else {
+    $logentry_data = {
+      level     => 'ok',
+      msg       => 'Auditd has a rule to collect events modifying network environment.',
+      rulestate => 'compliant',
+    }
   }
 
   if($enforce) {
@@ -74,31 +93,6 @@ class security_baseline_auditd::rules::system_locale (
         auditd::rule { 'watch network environment rule 7':
           content => '-a always,exit -F arch=b64 -S sethostname,setdomainname -F key=system-locale',
         }
-      }
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect events modifying network environment.',
-        rulestate => 'not compliant',
-      }
-    } else {
-      $logentry_data = {
-        level     => 'ok',
-        msg       => 'Auditd has a rule to collect events modifying network environment.',
-        rulestate => 'compliant',
-      }
-    }
-  } else {
-    if($facts['security_baseline_auditd']['system-locale'] == false) {
-      echo { 'auditd-locale':
-        message  => $message,
-        loglevel => $log_level,
-        withpath => false,
-      }
-
-      $logentry_data = {
-        level     => $log_level,
-        msg       => 'Auditd has no rule to collect events modifying network environment.',
-        rulestate => 'not compliant',
       }
     }
   }

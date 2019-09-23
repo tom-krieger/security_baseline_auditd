@@ -36,7 +36,7 @@ class security_baseline_auditd::rules::scope (
   require 'auditd'
 
   $logentry_default = {
-    rulenr    => 'auditd-scope',
+    rulenr    => '4.1.15',
     rule      => 'auditd-scope',
     desc      => 'Ensure changes to system administration scope (sudoers) is collected (Scored)',
   }
