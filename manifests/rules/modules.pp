@@ -65,25 +65,22 @@ class security_baseline_auditd::rules::modules (
   }
 
   if($enforce) {
-
-    if($facts['security_baseline_auditd']['modules'] == false) {
-      auditd::rule { 'watch modules rule 1':
-        content => '-w /sbin/insmod -p x -k modules',
+    auditd::rule { 'watch modules rule 1':
+      content => '-w /sbin/insmod -p x -k modules',
+    }
+    auditd::rule { 'watch modules rule 2':
+      content => '-w /sbin/rmmod -p x -k modules',
+    }
+    auditd::rule { 'watch modules rule 3':
+      content => '-w /sbin/modprobe -p x -k modules',
+    }
+    if($facts['architecture'] == 'x86_64') {
+      auditd::rule { 'watch modules rule 4':
+        content => '-a always,exit -F arch=b64 -S init_module -S delete_module -k modules',
       }
-      auditd::rule { 'watch modules rule 2':
-        content => '-w /sbin/rmmod -p x -k modules',
-      }
-      auditd::rule { 'watch modules rule 3':
-        content => '-w /sbin/modprobe -p x -k modules',
-      }
-      if($facts['architecture'] == 'x86_64') {
-        auditd::rule { 'watch modules rule 4':
-          content => '-a always,exit -F arch=b64 -S init_module -S delete_module -k modules',
-        }
-      } else {
-        auditd::rule { 'watch modules rule 4':
-          content => '-a always,exit -F arch=b32 -S init_module -S delete_module -k modules',
-        }
+    } else {
+      auditd::rule { 'watch modules rule 4':
+        content => '-a always,exit -F arch=b32 -S init_module -S delete_module -k modules',
       }
     }
   }

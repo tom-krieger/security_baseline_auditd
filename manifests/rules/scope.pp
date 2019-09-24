@@ -62,14 +62,11 @@ class security_baseline_auditd::rules::scope (
   }
 
   if($enforce) {
-
-    if($facts['security_baseline_auditd']['scope'] == false) {
-      auditd::rule { 'watch scope rule 1':
-        content => '-w /etc/sudoers -p wa -k scope',
-      }
-      auditd::rule { 'watch scope rule 2':
-        content => '-w /etc/sudoers.d/ -p wa -k scope',
-      }
+    auditd::rule { 'watch scope rule 1':
+      content => '-w /etc/sudoers -p wa -k scope',
+    }
+    auditd::rule { 'watch scope rule 2':
+      content => '-w /etc/sudoers.d/ -p wa -k scope',
     }
   }
 

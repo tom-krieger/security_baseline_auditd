@@ -60,25 +60,22 @@ class security_baseline_auditd::rules::time_change (
   }
 
   if($enforce) {
+    auditd::rule { 'watch for date-time-change rule 1':
+      content => '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change',
+    }
+    auditd::rule { 'watch for date-time-change rule 2':
+      content => '-a always,exit -F arch=b32 -S clock_settime -k time-change',
+    }
+    auditd::rule { 'watch for date-time-change rule 3':
+      content => '-w /etc/localtime -p wa -k time-change',
+    }
 
-    if($facts['security_baseline_auditd']['time-change'] == false) {
-      auditd::rule { 'watch for date-time-change rule 1':
-        content => '-a always,exit -F arch=b32 -S adjtimex -S settimeofday -S stime -k time-change',
+    if($facts['architecture'] == 'x86_64') {
+      auditd::rule { 'watch for date-time-change rule 4':
+        content => '-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change',
       }
-      auditd::rule { 'watch for date-time-change rule 2':
-        content => '-a always,exit -F arch=b32 -S clock_settime -k time-change',
-      }
-      auditd::rule { 'watch for date-time-change rule 3':
-        content => '-w /etc/localtime -p wa -k time-change',
-      }
-
-      if($facts['architecture'] == 'x86_64') {
-        auditd::rule { 'watch for date-time-change rule 4':
-          content => '-a always,exit -F arch=b64 -S adjtimex -S settimeofday -k time-change',
-        }
-        auditd::rule { 'wwatch for date-time-change rule 5':
-          content => '-a always,exit -F arch=b64 -S clock_settime -k time-change',
-        }
+      auditd::rule { 'wwatch for date-time-change rule 5':
+        content => '-a always,exit -F arch=b64 -S clock_settime -k time-change',
       }
     }
   }

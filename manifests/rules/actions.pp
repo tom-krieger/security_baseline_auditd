@@ -63,12 +63,8 @@ class security_baseline_auditd::rules::actions (
   }
 
   if($enforce) {
-
-    if($facts['security_baseline_auditd']['actions'] == false) {
-      auditd::rule { 'watch admin actions rule 1':
-        content => '-w /var/log/sudo.log -p wa -k actions',
-      }
-
+    auditd::rule { 'watch admin actions rule 1':
+      content => '-w /var/log/sudo.log -p wa -k actions',
     }
   }
 

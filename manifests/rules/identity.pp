@@ -61,23 +61,20 @@ class security_baseline_auditd::rules::identity (
   }
 
   if($enforce) {
-
-    if($facts['security_baseline_auditd']['identity'] == false) {
-      auditd::rule { 'watch identity rule 1':
-        content => '-w /etc/group -p wa -k identity',
-      }
-      auditd::rule { 'watch identity rule 2':
-        content => '-w /etc/passwd -p wa -k identity',
-      }
-      auditd::rule { 'watch identity rule 3':
-        content => '-w /etc/gshadow -p wa -k identity',
-      }
-      auditd::rule { 'watch identity rule 4':
-        content => '-w /etc/shadow -p wa -k identity',
-      }
-      auditd::rule { 'watch identity rule 5':
-        content => '-w /etc/security/opasswd -p wa -k identity',
-      }
+    auditd::rule { 'watch identity rule 1':
+      content => '-w /etc/group -p wa -k identity',
+    }
+    auditd::rule { 'watch identity rule 2':
+      content => '-w /etc/passwd -p wa -k identity',
+    }
+    auditd::rule { 'watch identity rule 3':
+      content => '-w /etc/gshadow -p wa -k identity',
+    }
+    auditd::rule { 'watch identity rule 4':
+      content => '-w /etc/shadow -p wa -k identity',
+    }
+    auditd::rule { 'watch identity rule 5':
+      content => '-w /etc/security/opasswd -p wa -k identity',
     }
   }
 

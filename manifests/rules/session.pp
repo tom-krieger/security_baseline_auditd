@@ -87,20 +87,14 @@ class security_baseline_auditd::rules::session (
   }
 
   if($enforce) {
-
-    if($facts['security_baseline_auditd']['session'] == false) {
-      auditd::rule { 'watch session rule 1':
-        content => '-w /var/run/utmp -p wa -k session',
-      }
+    auditd::rule { 'watch session rule 1':
+      content => '-w /var/run/utmp -p wa -k session',
     }
-
-    if($facts['security_baseline_auditd']['session-logins'] == false) {
-      auditd::rule { 'watch session rule 2':
-        content => '-w /var/log/wtmp -p wa -k logins',
-      }
-      auditd::rule { 'watch session rule 3':
-        content => '-w /var/log/btmp -p wa -k logins',
-      }
+    auditd::rule { 'watch session rule 2':
+      content => '-w /var/log/wtmp -p wa -k logins',
+    }
+    auditd::rule { 'watch session rule 3':
+      content => '-w /var/log/btmp -p wa -k logins',
     }
   }
 

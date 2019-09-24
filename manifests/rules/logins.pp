@@ -54,20 +54,17 @@ class security_baseline_auditd::rules::logins (
   } else {
     $logentry_data = {
       level     => 'ok',
-      msg       => 'Auditd has no rule to collect login and logout events.',
-      rulestate => 'not compliant',
+      msg       => 'Auditd has a rule to collect login and logout events.',
+      rulestate => 'compliant',
     }
   }
 
   if($enforce) {
-
-    if($facts['security_baseline_auditd']['logins'] == false) {
-      auditd::rule { 'logins policy rule 1':
-        content => '-w /var/log/lastlog -p wa -k logins',
-      }
-      auditd::rule { 'logins policy rule 2':
-        content => '-w /var/run/faillock/ -p wa -k logins',
-      }
+    auditd::rule { 'logins policy rule 1':
+      content => '-w /var/log/lastlog -p wa -k logins',
+    }
+    auditd::rule { 'logins policy rule 2':
+      content => '-w /var/run/faillock/ -p wa -k logins',
     }
   }
 

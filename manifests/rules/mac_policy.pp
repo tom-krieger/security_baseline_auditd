@@ -59,14 +59,11 @@ class security_baseline_auditd::rules::mac_policy (
   }
 
   if($enforce) {
-
-    if($facts['security_baseline_auditd']['mac-policy'] == false) {
-      auditd::rule { 'mac policy rule 1':
-        content => '-w /etc/selinux/ -p wa -k MAC-policy',
-      }
-      auditd::rule { 'mac policy rule 2':
-        content => '-w /usr/share/selinux/ -p wa -k MAC-policy',
-      }
+    auditd::rule { 'mac policy rule 1':
+      content => '-w /etc/selinux/ -p wa -k MAC-policy',
+    }
+    auditd::rule { 'mac policy rule 2':
+      content => '-w /usr/share/selinux/ -p wa -k MAC-policy',
     }
   }
 
