@@ -10,7 +10,7 @@ describe 'security_baseline_auditd' do
             'action_mail_acct' => 'root',
             'actions' => true,
             'admin_space_left_action' => 'halt',
-            'auditing_process' => 'linux16 /boot/vmlinuz-3.10.0-1062.1.1.el7.x86_64 root=UUID=f41e390f-835b-4223-a9bb-9b45984ddf8d ro console=tty0 console=ttyS0,115200n8 crashkernel=auto console=ttyS0,115200 LANG=en_US.UTF-8\n\tlinux16 /boot/vmlinuz-3.10.0-957.1.3.el7.x86_64 root=UUID=f41e390f-835b-4223-a9bb-9b45984ddf8d ro console=tty0 console=ttyS0,115200n8 crashkernel=auto console=ttyS0,115200 LANG=en_US.UTF-8\n\tlinux16 /boot/vmlinuz-0-rescue-05cb8c7b39fe0f70e3ce97e5beab809d root=UUID=f41e390f-835b-4223-a9bb-9b45984ddf8d ro console=tty0 console=ttyS0,115200n8 crashkernel=auto console=ttyS0,115200',
+            'auditing_process' => 'linux16 /boot/vmlinuz-3.10.0-1062.1.1.el7.x86_64 root=UUID=f41e390f-835b-4223-a9bb-9b45984ddf8d ro',
             'delete' => false,
             'identity' => false,
             'immutable' => true,
