@@ -40,7 +40,7 @@ class security_baseline_auditd::rules::immutable (
   }
 
   if($facts['security_baseline_auditd']['immutable'] == false) {
-    echo { 'auditd-mounts':
+    echo { 'auditd-immutable':
       message  => 'Auditd configuration is not immutable.',
       loglevel => $log_level,
       withpath => false,
