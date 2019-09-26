@@ -22,7 +22,7 @@ class security_baseline_auditd::rules (
   String $log_level  = 'info',
 ) {
   $classes = [
-    '::security_baseline_auditd::rules::time_change',
+    'security_baseline_auditd::rules::time_change',
     'security_baseline_auditd::rules::identity',
     'security_baseline_auditd::rules::system_locale',
     'security_baseline_auditd::rules::mac_policy',

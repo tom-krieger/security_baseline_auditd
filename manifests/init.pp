@@ -44,7 +44,7 @@
 #    This parameter tells the system what action to take when the system has detected that the max file size limit has been reached. 
 #
 # @example
-#   include security_baseline_auditd::ecurity_baseline_auditd
+#   include ::security_baseline_auditd
 class security_baseline_auditd (
   Boolean $enforce                = true,
   String $message                 = '',
