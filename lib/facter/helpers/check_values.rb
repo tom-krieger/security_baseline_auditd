@@ -5,7 +5,7 @@
 require 'pp'
 
 def check_values(val, expected, reverse = false, debug = false)
-  if val.empty? || val.nil?
+  if val.nil? || val.empty?
     false
   else
     output = val.split("\n")
