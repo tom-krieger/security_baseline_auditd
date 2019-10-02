@@ -154,7 +154,7 @@ Facter.add('security_baseline_auditd') do
     end
     expected.uniq!
     security_baseline_auditd['priv-cmds-rules'] = rules
-    security_baseline_auditd['priv-cmds'] = priv_cmds.uniq
+    security_baseline_auditd['priv-cmds-list'] = priv_cmds.uniq
 
     val = Facter::Core::Execution.exec('auditctl -l | grep "privileged$"')
     security_baseline_auditd['priv-cmds'] = check_values(val, expected, true)
