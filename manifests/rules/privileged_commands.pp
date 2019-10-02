@@ -59,7 +59,7 @@ class security_baseline_auditd::rules::privileged_commands (
   }
 
   if($enforce) {
-    $facts['security_baseline_auditd']['priv-cmds-rules'].each |$part, $rules| {
+    $facts['security_baseline_auditd']['priv-cmds'].each |$part, $rules| {
       $rules.each |$rule| {
         auditd::rule { $rule:
         }
