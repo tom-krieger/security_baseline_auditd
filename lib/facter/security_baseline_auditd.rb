@@ -151,7 +151,7 @@ Facter.add('security_baseline_auditd') do
       priv_cmds.push(rules_raw)
       rules[mount] = rules_raw
       expected.push(*rules_raw)
-    ends
+    end
     expected.uniq!
     security_baseline_auditd['priv-cmds-rules'] = rules
     security_baseline_auditd['priv-cmds'] = priv_cmds.uniq
