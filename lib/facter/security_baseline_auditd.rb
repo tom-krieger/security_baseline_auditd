@@ -145,7 +145,7 @@ Facter.add('security_baseline_auditd') do
     priv_cmds = []
     expected = []
     Facter.value(:partitions).each do |_part, data|
-      if data['filesystem'] != 'swap'
+      if (data['filesystem'] != 'swap') && (data['filesystem'] != 'LVM2_member')
         mount = data['mount']
         cmd = "find #{mount} -xdev \( -perm -4000 -o -perm -2000 \) -type f | awk '{print \"-a always,exit -S all -F path=\" $1 \" -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged\"; }'"
         pp cmd
