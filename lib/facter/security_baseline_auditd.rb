@@ -144,16 +144,21 @@ Facter.add('security_baseline_auditd') do
     rules = {}
     priv_cmds = []
     expected = []
-    Facter.value(:partitions).each do |_part, data|
-      if data.key?('mount')
-        mount = data['mount']
-        cmd = "find #{mount} -xdev \\( -perm -4000 -o -perm -2000 \\) -type f | awk '{print \"-a always,exit -S all -F path=\" $1 \" -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged\"; }'"
-        rules_raw = Facter::Core::Execution.exec(cmd).split("\n")
-        priv_cmds.push(rules_raw)
-        rules[mount] = rules_raw
-        expected.push(*rules_raw)
-      end
-    end
+    #Facter.value(:partitions).each do |_part, data|
+    #  if (data.key?('mount')) && (data['filesystem'] != 'iso9660') && ! _part.match(%r{^\/dev/loop}) && ! _part.match(%r{^\/dev/mapper\/docker})
+    #    mount = data['mount']
+    #    cmd = "find #{mount} -xdev \\( -perm -4000 -o -perm -2000 \\) -type f | awk '{print \"-a always,exit -S all -F path=\" $1 \" -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged\"; }'"
+    #    rules_raw = Facter::Core::Execution.exec(cmd).split("\n")
+    #    priv_cmds.push(rules_raw)
+    #    rules[mount] = rules_raw
+    #    expected.push(*rules_raw)
+    #  end
+    #end
+    cmd = "find /usr -xdev \\( -perm -4000 -o -perm -2000 \\) -type f | awk '{print \"-a always,exit -S all -F path=\" $1 \" -F perm=x -F auid>=1000 -F auid!=-1 -F key=privileged\"; }'"
+    rules_raw = Facter::Core::Execution.exec(cmd).split("\n")
+    priv_cmds.push(rules_raw)
+    rules[mount] = rules_raw
+    expected.push(*rules_raw)
     expected.uniq!
     security_baseline_auditd['priv-cmds-rules'] = rules
     security_baseline_auditd['priv-cmds-list'] = priv_cmds.uniq
