@@ -56,13 +56,13 @@ class security_baseline_auditd::rules::immutable (
       withpath => false,
     }
     $logentry_data = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd configuration is not immutable.',
       rulestate => 'not compliant',
     }
   } else {
     $logentry_data = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd configuration is immutable.',
       rulestate => 'compliant',
     }

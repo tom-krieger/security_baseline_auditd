@@ -58,13 +58,13 @@ class security_baseline_auditd::rules::identity (
     }
 
     $logentry_data = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd has no rule to collect events changing identity.',
       rulestate => 'not compliant',
     }
   } else {
     $logentry_data = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd has a rule to collect events changing identity.',
       rulestate => 'compliant',
     }

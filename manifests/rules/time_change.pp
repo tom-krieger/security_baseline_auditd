@@ -57,13 +57,13 @@ class security_baseline_auditd::rules::time_change (
       withpath => false,
     }
     $logentry_data = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd has no rule to collect events changing date and time.',
       rulestate => 'not compliant',
     }
   } else {
     $logentry_data = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd has a rule to collect events changing date and time.',
       rulestate => 'compliant',
     }

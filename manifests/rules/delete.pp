@@ -60,13 +60,13 @@ class security_baseline_auditd::rules::delete (
     }
 
     $logentry_data = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd has no rule to collect file deletion events by users.',
       rulestate => 'not compliant',
     }
   } else {
     $logentry_data = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd has a rule to collect file deletion events by users.',
       rulestate => 'compliant',
     }

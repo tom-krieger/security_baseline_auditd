@@ -60,13 +60,13 @@ class security_baseline_auditd::rules::actions (
     }
 
     $logentry_data = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd has no rule to collect system administrator actions (sudolog).',
       rulestate => 'not compliant',
     }
   } else {
     $logentry_data = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd has a rule to collect system administrator actions (sudolog).',
       rulestate => 'compliant',
     }

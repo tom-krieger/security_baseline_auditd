@@ -67,13 +67,13 @@ class security_baseline_auditd::rules::session (
       withpath => false,
     }
     $session_entry = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd has no rule to collect session initiation events.',
       rulestate => 'not compliant',
     }
   } else {
     $session_entry = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd has a rule to collect session initiation events.',
       rulestate => 'compliant',
     }

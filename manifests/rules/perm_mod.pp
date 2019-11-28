@@ -61,13 +61,13 @@ class security_baseline_auditd::rules::perm_mod (
     }
 
     $logentry_data = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd has no rule to collect discretionary access control permission modification events.',
       rulestate => 'not compliant',
     }
   } else {
     $logentry_data = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd has a rule to collect discretionary access control permission modification events.',
       rulestate => 'compliant',
     }

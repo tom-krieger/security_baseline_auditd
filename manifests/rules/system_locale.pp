@@ -66,13 +66,13 @@ class security_baseline_auditd::rules::system_locale (
       withpath => false,
     }
     $logentry_data = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd has no rule to collect events modifying network environment.',
       rulestate => 'not compliant',
     }
   } else {
     $logentry_data = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd has a rule to collect events modifying network environment.',
       rulestate => 'compliant',
     }
