@@ -202,6 +202,8 @@ class security_baseline_auditd (
     enforce   => $enforce,
     message   => $message,
     log_level => $log_level,
+    level     => $level,
+    scored    => $scored,
     require   => Class['::auditd'],
   }
 }
