@@ -22,6 +22,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::access':
 #             enforce => true,
@@ -32,8 +38,10 @@
 # @api private
 class security_baseline_auditd::rules::access (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -41,6 +49,8 @@ class security_baseline_auditd::rules::access (
     rulenr    => '4.1.11',
     rule      => 'auditd-access',
     desc      => 'Ensure unsuccessful unauthorized file access attempts are collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['access'] == false) {
@@ -65,17 +75,17 @@ class security_baseline_auditd::rules::access (
 
   if($enforce) {
     auditd::rule { 'watch access rule 1':
-      content => '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access',
+      content => '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access', #lint:ignore:140chars
     }
     auditd::rule { 'watch access rule 2':
-      content => '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access',
+      content => '-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access', #lint:ignore:140chars
     }
     if($facts['architecture'] == 'x86_64') {
       auditd::rule { 'watch access rule 3':
-        content => '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access',
+        content => '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access', #lint:ignore:140chars
       }
       auditd::rule { 'watch access rule 4':
-        content => '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access',
+        content => '-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=4294967295 -k access', #lint:ignore:140chars
       }
     }
   }

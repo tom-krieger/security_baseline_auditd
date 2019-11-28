@@ -22,6 +22,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::perm_mod':
 #             enforce => true,
@@ -32,8 +38,10 @@
 # @api private
 class security_baseline_auditd::rules::perm_mod (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -41,6 +49,8 @@ class security_baseline_auditd::rules::perm_mod (
     rulenr    => '4.1.10',
     rule      => 'auditd-perm-mod',
     desc      => 'Ensure discretionary access control permission modification events are collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['perm-mod'] == false) {
@@ -71,7 +81,7 @@ class security_baseline_auditd::rules::perm_mod (
       content => '-a always,exit -F arch=b32 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod',
     }
     auditd::rule { 'watch perm mod rule 3':
-      content => '-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod',
+      content => '-a always,exit -F arch=b32 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod', #lint:ignore:140chars
     }
     if($facts['architecture'] == 'x86_64') {
       auditd::rule { 'watch perm mod rule 4':
@@ -81,7 +91,7 @@ class security_baseline_auditd::rules::perm_mod (
         content => '-a always,exit -F arch=b64 -S chown -S fchown -S fchownat -S lchown -F auid>=1000 -F auid!=4294967295 -k perm_mod',
       }
       auditd::rule { 'watch perm mod rule 6':
-        content => '-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod',
+        content => '-a always,exit -F arch=b64 -S setxattr -S lsetxattr -S fsetxattr -S removexattr -S lremovexattr -S fremovexattr -F auid>=1000 -F auid!=4294967295 -k perm_mod', #lint:ignore:140chars
       }
     }
   }

@@ -22,6 +22,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::session':
 #             enforce => true,
@@ -32,8 +38,10 @@
 # @api private
 class security_baseline_auditd::rules::session (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -41,11 +49,15 @@ class security_baseline_auditd::rules::session (
     rulenr    => '4.1.9.1',
     rule      => 'auditd',
     desc      => 'Ensure session initiation information is collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
   $logins_default = {
     rulenr    => '4.1.9.2',
     rule      => 'auditd',
     desc      => 'Ensure session initiation information is collected for logins (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['session'] == false) {

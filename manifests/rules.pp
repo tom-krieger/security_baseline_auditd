@@ -12,6 +12,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   include security_baseline_auditd::rules
 #
@@ -20,6 +26,8 @@ class security_baseline_auditd::rules (
   Boolean $enforce   = true,
   String $message    = '',
   String $log_level  = 'info',
+  Integer $level     = 1,
+  Boolean $scored    = true,
 ) {
   $classes = [
     'security_baseline_auditd::rules::time_change',
@@ -44,6 +52,8 @@ class security_baseline_auditd::rules (
       enforce   => $enforce,
       message   => $message,
       log_level => $log_level,
+      level     => $level,
+      scored    => $scored,
     }
   }
 }

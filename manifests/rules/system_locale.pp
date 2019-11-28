@@ -28,6 +28,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::system_locale':   
 #             enforce => true,
@@ -38,8 +44,10 @@
 # @api private
 class security_baseline_auditd::rules::system_locale (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -47,6 +55,8 @@ class security_baseline_auditd::rules::system_locale (
     rulenr    => '4.1.6',
     rule      => 'auditd-locate',
     desc      => 'Ensure events that modify the system\'s network environment are collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['system-locale'] == false) {

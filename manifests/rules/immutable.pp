@@ -18,6 +18,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::immutable':
 #             enforce => true,
@@ -28,8 +34,10 @@
 # @api private
 class security_baseline_auditd::rules::immutable (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -37,6 +45,8 @@ class security_baseline_auditd::rules::immutable (
     rulenr    => '4.1.18',
     rule      => 'auditd-immutable',
     desc      => 'Ensure the audit configuration is immutable (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['immutable'] == false) {

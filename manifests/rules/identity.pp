@@ -19,6 +19,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::identity':
 #             enforce => true,
@@ -29,8 +35,10 @@
 # @api private
 class security_baseline_auditd::rules::identity (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -38,6 +46,8 @@ class security_baseline_auditd::rules::identity (
     rulenr    => '4.1.5',
     rule      => 'auditd-identity',
     desc      => 'Ensure events that modify user/group information are collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['identity'] == false) {

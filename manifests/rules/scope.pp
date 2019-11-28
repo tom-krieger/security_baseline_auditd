@@ -20,6 +20,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::scope':
 #             enforce => true,
@@ -30,8 +36,10 @@
 # @api private
 class security_baseline_auditd::rules::scope (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -39,6 +47,8 @@ class security_baseline_auditd::rules::scope (
     rulenr    => '4.1.15',
     rule      => 'auditd-scope',
     desc      => 'Ensure changes to system administration scope (sudoers) is collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['scope'] == false) {

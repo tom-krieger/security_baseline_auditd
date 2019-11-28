@@ -19,6 +19,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::time_change':
 #             enforce => true,
@@ -29,8 +35,10 @@
 # @api private
 class security_baseline_auditd::rules::time_change (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -38,6 +46,8 @@ class security_baseline_auditd::rules::time_change (
     rulenr    => '4.1.4',
     rule      => 'auditd-time-change',
     desc      => 'Ensure events that modify date and time information are collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['time-change'] == false) {

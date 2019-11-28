@@ -21,6 +21,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::actions':
 #             enforce => true,
@@ -31,8 +37,10 @@
 # @api private
 class security_baseline_auditd::rules::actions (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -40,6 +48,8 @@ class security_baseline_auditd::rules::actions (
     rulenr    => '4.1.16',
     rule      => 'auditd-actions',
     desc      => 'Ensure system administrator actions (sudolog) are collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['actions'] == false) {

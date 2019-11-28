@@ -23,6 +23,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::modules':
 #             enforce => true,
@@ -33,8 +39,10 @@
 # @api private
 class security_baseline_auditd::rules::modules (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -42,6 +50,8 @@ class security_baseline_auditd::rules::modules (
     rulenr    => '4.1.17',
     rule      => 'auditd-modules',
     desc      => 'Ensure kernel module loading and unloading is collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['modules'] == false) {

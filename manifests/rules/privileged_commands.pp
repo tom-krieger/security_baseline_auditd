@@ -17,6 +17,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::privileged_commands':
 #             enforce => true,
@@ -27,8 +33,10 @@
 # @api private
 class security_baseline_auditd::rules::privileged_commands (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -36,6 +44,8 @@ class security_baseline_auditd::rules::privileged_commands (
     rulenr    => '4.1.12',
     rule      => 'auditd-priv-cmds',
     desc      => 'Ensure use of privileged commands is collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['priv-cmds'] == false) {

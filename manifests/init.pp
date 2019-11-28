@@ -23,6 +23,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @param logfile 
 #    Logfile to log into
 #
@@ -49,6 +55,8 @@ class security_baseline_auditd (
   Boolean $enforce                = true,
   String $message                 = '',
   String $log_level               = 'info',
+  Integer $level                  = 1,
+  Boolean $scored                 = true,
   String $logfile                 = '',
   Integer $max_log_size           = 32,
   String $space_left_action       = 'email',
@@ -75,21 +83,29 @@ class security_baseline_auditd (
     rulenr    => '4.1.1.1',
     rule      => 'auditd-max-log-file',
     desc      => 'Ensure auditd settings are correct (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
   $disable_default = {
     rulenr    => '4.1.1.2',
     rule      => 'auditd-disable-when-full',
     desc      => 'Ensure system is disabled when audit logs are full (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
   $maxlogaction_default = {
     rulenr    => '4.1.1.3',
-        rule      => 'auditd-disable-when-full',
-        desc      => 'Ensure system is disabled when audit logs are full (Scored)',
+    rule      => 'auditd-disable-when-full',
+    desc      => 'Ensure system is disabled when audit logs are full (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
   $service_default = {
     rulenr    => '4.1.2',
     rule      => 'auditd-service',
     desc      => 'Ensure auditd service is enabled (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['max_log_file'] == 'none') {

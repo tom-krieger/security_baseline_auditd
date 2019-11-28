@@ -17,6 +17,12 @@
 # @param log_level
 #    Loglevel for the message
 #
+# @param level
+#    Profile level
+#
+# @param scored
+#    Indicates if a rule is scored or not
+#
 # @example
 #   class { 'security_baseline_auditd::rules::mac_policy':
 #             enforce => true,
@@ -27,8 +33,10 @@
 # @api private
 class security_baseline_auditd::rules::mac_policy (
   Boolean $enforce,
-  String $message = '',
+  String $message   = '',
   String $log_level = 'info',
+  Integer $level    = 1,
+  Boolean $scored   = true,
 ) {
   require 'auditd'
 
@@ -36,6 +44,8 @@ class security_baseline_auditd::rules::mac_policy (
     rulenr    => '4.1.7',
     rule      => 'auditd-mac-policy',
     desc      => 'Ensure events that modify the system\'s Mandatory Access Controls are collected (Scored)',
+    level     => $level,
+    scored    => $scored,
   }
 
   if($facts['security_baseline_auditd']['mac-policy'] == false) {
