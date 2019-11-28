@@ -110,13 +110,13 @@ class security_baseline_auditd (
 
   if($facts['security_baseline_auditd']['max_log_file'] == 'none') {
     $maxlog_entry = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd setting for max_log_file is not correct.',
       rulestate => 'not compliant',
     }
   } else {
     $maxlog_entry = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd setting for max_log_file is correct.',
       rulestate => 'compliant',
     }
@@ -127,26 +127,26 @@ class security_baseline_auditd (
     ($facts['security_baseline_auditd']['space_left_action'] == 'none')
   ) {
     $disable_entry = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd setting for action_mail_acct and/or admin_space_left_action and/or space_left_action are not correct.',
       rulestate => 'not compliant',
     }
   } else {
     $disable_entry = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd setting for action_mail_acct, admin_space_left_action and space_left_action are correct.',
       rulestate => 'compliant',
     }
   }
   if($facts['security_baseline_auditd']['max_log_file_action'] == 'none') {
     $maxlogaction_entry = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd setting for max_log_file_action is not correct.',
       rulestate => 'not compliant',
     }
   } else {
     $maxlogaction_entry = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd setting for max_log_file_action is correct.',
       rulestate => 'ompliant',
     }
@@ -160,13 +160,13 @@ class security_baseline_auditd (
     }
 
     $service_entry = {
-      level     => $log_level,
+      log_level => $log_level,
       msg       => 'Auditd service is not running.',
       rulestate => 'not compliant',
     }
   } else {
     $service_entry = {
-      level     => 'ok',
+      log_level => 'ok',
       msg       => 'Auditd service is running.',
       rulestate => 'compliant',
     }
