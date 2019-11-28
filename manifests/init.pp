@@ -55,7 +55,14 @@ class security_baseline_auditd (
   String $action_mail_acct        = 'root',
   String $admin_space_left_action = 'halt',
   String $max_log_file_action     = 'keep_logs',
+  Array $suid_include             = [],
+  Array $suid_exclude             = [],
 ) {
+  class {'security_baseline_auditd::cron::suid_rules':
+    include => $suid_include,
+    exclude => $suid_exclude,
+  }
+
   $auditd_config = {
     'max_log_file'            => $max_log_size,
     'space_left_action'       => $space_left_action,
