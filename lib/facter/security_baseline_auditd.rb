@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'facter/security_baseline_auditd/redhat/secutity_baseline_auditd_redhat'
-require 'facter/security_baseline_auditd/ubuntu/secutity_baseline_auditd_ubuntu'
-require 'facter/security_baseline_auditd/debian/secutity_baseline_auditd_debian'
-require 'facter/security_baseline_auditd/sles/secutity_baseline_auditd_sles'
+require 'facter/security_baseline_auditd/redhat/security_baseline_auditd_redhat'
+require 'facter/security_baseline_auditd/ubuntu/security_baseline_auditd_ubuntu'
+require 'facter/security_baseline_auditd/debian/security_baseline_auditd_debian'
+require 'facter/security_baseline_auditd/sles/security_baseline_auditd_sles'
 require 'pp'
 
 # security_baseline_auditd.rb
