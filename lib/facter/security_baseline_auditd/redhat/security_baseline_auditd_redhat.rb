@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'facter/security_baseline_auditd/helpers/check_values'
+require 'facter/security_baseline_auditd/common/check_values'
 require 'pp'
 
 # security_baseline_auditd.rb
